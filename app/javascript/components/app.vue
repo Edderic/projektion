@@ -18,17 +18,6 @@
     components: { Node },
     methods: {
       onClick(event) {
-        console.log(event.clientX); // x coordinate
-        console.log(event.clientY); // y coordinate
-
-        // pageX/Y gives the coordinates relative to the <html> element in CSS pixels.
-        console.log(event.pageX);
-        console.log(event.pagey);
-
-        // screenX/Y gives the coordinates relative to the screen in device pixels.
-        console.log(event.screenX);
-        console.log(event.screenY);
-
         this.components.push({
           component: Node,
           x: event.clientX,
@@ -46,8 +35,9 @@
 
 <style scoped>
   #app {
-    height: 100%;
-    width: 100%;
+    height: 800px;
+    width: 800px;
+    background-color: red;
     position: relative;
   }
   p {

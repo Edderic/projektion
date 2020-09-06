@@ -18,8 +18,8 @@
       return {
         message: "Hello",
         styleObject: {
-          top: this.y + 'px',
-          left: this.x + 'px'
+          top: this.y - 60 + 'px',
+          left: this.x - 35 + 'px'
         }
       }
     }
@@ -31,5 +31,7 @@
     min-height: 50px;
     min-width: 50px;
     position: absolute;
+    border: 1px solid black;
+    border-radius: 100%;
   }
 </style>
