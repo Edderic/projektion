@@ -15,6 +15,11 @@
 
   export default {
     components: { Node },
+    created: function created() {
+      this.$store.commit('initialState', {
+        nodes: []
+      });
+    },
     methods: {
       onClick(event) {
         this.components.push({

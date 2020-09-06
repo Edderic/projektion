@@ -12,6 +12,7 @@
     methods: {
       onClick(e) {
         this.active = !this.active;
+        // set all other nodes' active to false
       },
     },
     props: ['x', 'y'],
