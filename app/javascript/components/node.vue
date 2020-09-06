@@ -1,5 +1,5 @@
 <template>
-  <div class='node' :style="styleObject" v-on:click.stop='onClick'>
+  <div :class='[active ? "active" : "inactive", "node"]' :style="styleObject" v-on:click.stop='onClick'>
     <p>{{ message }}</p>
   </div>
 </template>
@@ -11,7 +11,7 @@
     components: { Node },
     methods: {
       onClick(e) {
-        this.active = true;
+        this.active = !this.active;
       },
     },
     props: ['x', 'y'],
@@ -19,6 +19,10 @@
       return {
         message: "Hello",
         active: false,
+        classObject: {
+          node: true,
+          active: this.active,
+        },
         styleObject: {
           top: this.y - 35 + 'px',
           left: this.x - 35 + 'px'
@@ -33,7 +37,12 @@
     min-height: 50px;
     min-width: 50px;
     position: absolute;
-    border: 1px solid black;
     border-radius: 100%;
+  }
+  .active {
+    border: 3px solid black;
+  }
+  .inactive {
+    border: 1px solid black;
   }
 </style>
