@@ -11,19 +11,19 @@
     components: { Node },
     methods: {
       onClick(e) {
-        this.active = !this.active;
-        // set all other nodes' active to false
+        this.$store.commit(
+          'setAllNodesInactiveExcept',
+          {
+            exceptId: this.id
+          }
+        );
+        // this.active = !this.active;
       },
     },
-    props: ['x', 'y'],
+    props: ['x', 'y', 'active', 'id'],
     data: function () {
       return {
         message: "Hello",
-        active: false,
-        classObject: {
-          node: true,
-          active: this.active,
-        },
         styleObject: {
           top: this.y - 35 + 'px',
           left: this.x - 35 + 'px'

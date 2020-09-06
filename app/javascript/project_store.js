@@ -20,6 +20,15 @@ export function createStore() {
       },
       addNode(state, node) {
         state.nodes.push(node);
+
+        this.commit('setAllNodesInactiveExcept', {
+          exceptId: node.id
+        });
+      },
+      setAllNodesInactiveExcept(state, { exceptId }) {
+        for (let node of state.nodes) {
+          node.active = node.id == exceptId;
+        }
       }
     }
   });
