@@ -2,9 +2,11 @@
   <div id='app' v-on:click='onClick'>
     <p>HELLO</p>
     <component
-      v-for="(component, index) in components"
+      v-for="(component_hash, index) in components"
       :key="index"
-      :is="component"
+      :is="component_hash.component"
+      :x="component_hash.x"
+      :y="component_hash.y"
     />
   </div>
 </template>
@@ -15,7 +17,7 @@
   export default {
     components: { Node },
     methods: {
-      onClick(e) {
+      onClick(event) {
         console.log(event.clientX); // x coordinate
         console.log(event.clientY); // y coordinate
 
@@ -27,7 +29,11 @@
         console.log(event.screenX);
         console.log(event.screenY);
 
-        this.components.push(Node);
+        this.components.push({
+          component: Node,
+          x: event.clientX,
+          y: event.clientY
+        });
       }
     },
     data: function () {
