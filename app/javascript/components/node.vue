@@ -1,5 +1,5 @@
 <template>
-  <div class='node' :style="styleObject">
+  <div class='node' :style="styleObject" v-on:click.stop='onClick'>
     <p>{{ message }}</p>
   </div>
 </template>
@@ -11,14 +11,16 @@
     components: { Node },
     methods: {
       onClick(e) {
+        this.active = true;
       },
     },
     props: ['x', 'y'],
     data: function () {
       return {
         message: "Hello",
+        active: false,
         styleObject: {
-          top: this.y - 60 + 'px',
+          top: this.y - 35 + 'px',
           left: this.x - 35 + 'px'
         }
       }

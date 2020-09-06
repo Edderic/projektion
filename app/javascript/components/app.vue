@@ -1,6 +1,5 @@
 <template>
   <div id='app' v-on:click='onClick'>
-    <p>HELLO</p>
     <component
       v-for="(component_hash, index) in components"
       :key="index"
