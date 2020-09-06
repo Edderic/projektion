@@ -1,17 +1,18 @@
 <template>
   <div id='app' v-on:click='onClick'>
     <component
-      v-for="(component_hash, index) in components"
+      v-for="(node, index) in nodes"
       :key="index"
-      :is="component_hash.component"
-      :x="component_hash.x"
-      :y="component_hash.y"
+      :is="node.component"
+      :x="node.x"
+      :y="node.y"
     />
   </div>
 </template>
 
 <script>
   import Node from '../components/node';
+  import { mapState } from 'vuex';
 
   export default {
     components: { Node },
@@ -20,13 +21,19 @@
         nodes: []
       });
     },
+    computed: {
+      ...mapState(['nodes'])
+    },
     methods: {
       onClick(event) {
-        this.components.push({
-          component: Node,
-          x: event.clientX,
-          y: event.clientY
-        });
+        this.$store.commit(
+          'addNode',
+          {
+            component: Node,
+            x: event.clientX,
+            y: event.clientY
+          }
+        );
       }
     },
     data: function () {
