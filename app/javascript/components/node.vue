@@ -22,10 +22,6 @@
       }
     },
     methods: {
-      setPosition(x,y) {
-        this.x = x;
-        this.y = y;
-      },
       onClick(e) {
         this.$store.commit(
           'setAllNodesInactiveExcept',
