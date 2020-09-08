@@ -1,13 +1,19 @@
 <template>
-  <div id='app' v-on:click='onClick'>
-    <component
-      v-for="(node, index) in nodes"
-      :key="index"
-      :is="node.component"
+  <div
+    id='app'
+    v-on:click='onClick'
+    v-on:drop='onDrop'
+    @dragover.prevent
+    @dragenter.prevent
+  >
+    <Node
+      v-for="node in nodes"
+      :key="node.id"
       :x="node.x"
       :y="node.y"
       :active="node.active"
       :id="node.id"
+      draggable='true'
     />
   </div>
 </template>
@@ -19,9 +25,9 @@
   export default {
     components: { Node },
     created: function created() {
-      this.$store.commit('initialState', {
-        nodes: []
-      });
+      //this.$store.commit('initialState', {
+      //  nodes: {}
+      //});
     },
     computed: {
       ...mapState(['nodes'])
@@ -31,11 +37,20 @@
         this.$store.commit(
           'addNode',
           {
-            component: Node,
             x: event.clientX,
             y: event.clientY,
             active: true,
             id: this.uuidv4()
+          }
+        );
+      },
+      onDrop(event) {
+        this.$store.commit(
+          'dropNode',
+          {
+            id: event.dataTransfer.getData('itemID'),
+            x: event.clientX,
+            y: event.clientY
           }
         );
       },
