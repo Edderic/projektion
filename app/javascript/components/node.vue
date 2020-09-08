@@ -4,7 +4,6 @@
     :style="styleObject"
     v-on:click.stop='onClick'
     v-on:dragstart='onDragStart'
-    v-on:dragover='onDrag'
   >
   </div>
 </template>
@@ -39,16 +38,6 @@
         event.dataTransfer.dropEffect = 'move';
         event.dataTransfer.effectAllowed = 'move';
         event.dataTransfer.setData('itemID', this.id);
-      },
-      onDrag(e) {
-        this.$store.commit(
-          'dragNode',
-          {
-            id: this.id,
-            x: event.clientX,
-            y: event.clientY
-          }
-        );
       },
     },
     props: ['active', 'id', 'x', 'y']

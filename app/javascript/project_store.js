@@ -40,15 +40,6 @@ export function createStore() {
         }
       },
 
-      dragNode(state, { id, x, y }) {
-        for (let node of state.nodes) {
-          if (node.id == id) {
-            node.x = x;
-            node.y = y;
-          }
-        }
-      },
-
       setAllNodesInactiveExcept(state, { exceptId }) {
         for (let node of state.nodes) {
           node.active = node.id == exceptId;
