@@ -1,20 +1,38 @@
 <template>
   <div
     id='app'
-    v-on:click='onClick'
-    v-on:drop='onDrop'
-    @dragover.prevent
-    @dragenter.prevent
   >
-    <Node
-      v-for="node in nodes"
-      :key="node.id"
-      :x="node.x"
-      :y="node.y"
-      :active="node.active"
-      :id="node.id"
-      draggable='true'
-    />
+<svg
+  ref="dag"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 800 800"
+  v-on:click='onClick'
+  width="800"
+  height="800"
+  @dragover.prevent
+  @dragenter.prevent
+>
+
+  <Node
+    v-for="node in nodes"
+    :key="node.id"
+    :x="node.x"
+    :y="node.y"
+    :active="node.active"
+    :id="node.id"
+  />
+
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 100" width="100px" height="35px">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7"
+    refX="0" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+  </defs>
+  <line x1="0" y1="50" x2="250" y2="50" stroke="#000"
+  stroke-width="8" marker-end="url(#arrowhead)" />
+</svg>
   </div>
 </template>
 
@@ -25,9 +43,22 @@
   export default {
     components: { Node },
     created: function created() {
-      //this.$store.commit('initialState', {
-      //  nodes: {}
-      //});
+      this.$store.commit('initialState', {
+        nodes: [
+          {
+            x: 100,
+            y: 200,
+            active: true,
+            id: this.uuidv4()
+          },
+          {
+            x: 200,
+            y: 300,
+            active: false,
+            id: this.uuidv4()
+          }
+        ]
+      });
     },
     computed: {
       ...mapState(['nodes'])
@@ -37,20 +68,10 @@
         this.$store.commit(
           'addNode',
           {
-            x: event.clientX,
-            y: event.clientY,
+            x: event.offsetX,
+            y: event.offsetY,
             active: true,
             id: this.uuidv4()
-          }
-        );
-      },
-      onDrop(event) {
-        this.$store.commit(
-          'dropNode',
-          {
-            id: event.dataTransfer.getData('itemID'),
-            x: event.clientX,
-            y: event.clientY
           }
         );
       },
@@ -71,8 +92,6 @@
 
 <style scoped>
   #app {
-    height: 800px;
-    width: 800px;
     background-color: red;
     position: relative;
   }

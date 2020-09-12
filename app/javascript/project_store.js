@@ -8,12 +8,14 @@ export function createStore() {
   return new Vuex.Store({
     state: {
       nodes: [],
+      arrows: []
     },
     mutations: {
       initialState(
         state,
         {
-          nodes
+          nodes,
+          arrows
         }
       ) {
         state.nodes = nodes;
@@ -24,6 +26,17 @@ export function createStore() {
         this.commit('setAllNodesInactiveExcept', {
           exceptId: node.id
         });
+
+        if (state.nodes.length > 0) {
+          for (let nodeA of state.nodes) {
+            state.arrows.push({
+              fromX: nodeA.x,
+              fromY: nodeA.y,
+              toX: node.x,
+              toY: node.y
+            });
+          }
+        }
       },
 
       // 1. might be good to make 35 not duplicated
