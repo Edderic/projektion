@@ -8,7 +8,8 @@ export function createStore() {
   return new Vuex.Store({
     state: {
       nodes: [],
-      arrows: []
+      arrows: [],
+      draggingNode: null
     },
     mutations: {
       initialState(
@@ -27,30 +28,50 @@ export function createStore() {
           exceptId: node.id
         });
 
-        if (state.nodes.length > 0) {
-          for (let nodeA of state.nodes) {
-            state.arrows.push({
-              fromX: nodeA.x,
-              fromY: nodeA.y,
-              toX: node.x,
-              toY: node.y
-            });
-          }
+        for (let nodeA of state.nodes) {
+          state.arrows.push({
+            x1: nodeA.x,
+            y1: nodeA.y,
+            x2: node.x,
+            y2: node.y
+          });
         }
       },
 
-      // 1. might be good to make 35 not duplicated
-      //
+      startDrag(state,
+        {
+          id,
+          dragOffsetX,
+          dragOffsetY
+        }
+      ) {
+        for (let node of state.nodes) {
+          if (node.id == id) {
+            node.active = true;
+            node.dragOffsetX = dragOffsetX;
+            node.dragOffsetY = dragOffsetY;
+            state.draggingNode = node;
+          } else {
+            node.active = false;
+            node.dragOffsetX = null;
+            node.dragOffsetY = null;
+          }
+        }
+      },
       // 2. Might be good to have nodes be a dictionary
       // so we don't have to search
       //  - had issues with doing so; nodes weren't showing up
-      dropNode(state, { id, x, y }) {
-        for (let node of state.nodes) {
-          if (node.id == id) {
-            node.x = x;
-            node.y = y;
-          }
+      moveNode(state, { id, offsetX, offsetY }) {
+        if (!state.draggingNode) {
+          return;
         }
+
+        state.draggingNode.x = offsetX - state.draggingNode.dragOffsetX;
+        state.draggingNode.y = offsetY - state.draggingNode.dragOffsetY;
+      },
+
+      dropNode(state) {
+        state.draggingNode = null;
       },
 
       setAllNodesInactiveExcept(state, { exceptId }) {

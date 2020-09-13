@@ -2,42 +2,55 @@
   <div
     id='app'
   >
-<svg
-  ref="dag"
-  xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 800 800"
-  v-on:click='onClick'
-  width="800"
-  height="800"
-  @dragover.prevent
-  @dragenter.prevent
->
+    <svg
+      ref="dag"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 800 800"
+      v-on:click='onClick'
+      @mousemove='move'
+      @mouseup='drop'
+      width="800"
+      height="800"
+      @dragover.prevent
+      @dragenter.prevent
+    >
+      <Node
+        v-for="node in nodes"
+        :key="node.id"
+        :x="node.x"
+        :y="node.y"
+        :active="node.active"
+        :id="node.id"
+        :dragOffsetX="node.dragOffsetX"
+        :dragOffsetY="node.dragOffsetY"
+      />
 
-  <Node
-    v-for="node in nodes"
-    :key="node.id"
-    :x="node.x"
-    :y="node.y"
-    :active="node.active"
-    :id="node.id"
-  />
+      <Arrow
+        v-for="arrow in arrows"
+        :key="arrow.id"
+        :x1="arrow.x1"
+        :y1="arrow.y1"
+        :x2="arrow.x2"
+        :y2="arrow.y2"
+      />
+    </svg>
 
-</svg>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 100" width="100px" height="35px">
-  <defs>
-    <marker id="arrowhead" markerWidth="10" markerHeight="7"
-    refX="0" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" />
-    </marker>
-  </defs>
-  <line x1="0" y1="50" x2="250" y2="50" stroke="#000"
-  stroke-width="8" marker-end="url(#arrowhead)" />
-</svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 100" width="100px" height="35px">
+      <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7"
+        refX="0" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" />
+        </marker>
+      </defs>
+      <line x1="0" y1="50" x2="250" y2="50" stroke="#000"
+      stroke-width="8" marker-end="url(#arrowhead)" />
+    </svg>
   </div>
 </template>
 
 <script>
   import Node from '../components/node';
+  import Arrow from '../components/arrow';
   import { mapState } from 'vuex';
 
   export default {
@@ -61,7 +74,7 @@
       });
     },
     computed: {
-      ...mapState(['nodes'])
+      ...mapState(['nodes', 'arrows'])
     },
     methods: {
       onClick(event) {
@@ -74,6 +87,18 @@
             id: this.uuidv4()
           }
         );
+      },
+      move({offsetX, offsetY}) {
+        this.$store.commit(
+          'moveNode',
+          {
+            offsetX,
+            offsetY
+          }
+        );
+      },
+      drop(event) {
+        this.$store.commit('dropNode');
       },
       uuidv4() {
         // https://stackoverflow.com/questions/105034/how-to-create-guid-uuid

@@ -1,20 +1,14 @@
 <template>
-
-  <circle :cx="x" :cy="y" r="10" fill="white" class="node"
+  <circle :cx="x" :cy="y" r="20" fill="white" class="node"
     v-on:click.stop='onClick'
-    @mousedown='drag'
-    @mousemove='move'
-    @mouseup='drop'
+    @mousedown='startDrag'
     stroke='black'
     :stroke-width="strokeWidth"
   />
 </template>
 
 <script>
-  import Node from '../components/node';
-
   export default {
-    components: { Node },
     computed: {
       strokeWidth() {
         if (this.active) {
@@ -31,9 +25,15 @@
       }
     },
     methods: {
-      drag({offsetX, offsetY}) {
-        this.dragOffsetX = offsetX - this.x;
-        this.dragOffsetY = offsetY - this.y;
+      startDrag({offsetX, offsetY}) {
+        this.$store.commit(
+          'startDrag',
+          {
+            id: this.id,
+            dragOffsetX: offsetX - this.x,
+            dragOffsetY: offsetY - this.y
+          }
+        )
       },
       onClick(e) {
         this.$store.commit(
@@ -43,26 +43,8 @@
           }
         );
       },
-      move({offsetX, offsetY}) {
-        if (this.dragOffsetX == null || this.dragOffsetY == null) {
-          return;
-        }
-
-        this.$store.commit(
-          'dropNode',
-          {
-            id: this.id,
-            x: offsetX - this.dragOffsetX,
-            y: offsetY - this.dragOffsetY
-          }
-        );
-      },
-      drop(event) {
-        this.dragOffsetX = null;
-        this.dragOffsetY = null;
-      },
     },
-    props: ['active', 'id', 'x', 'y']
+    props: ['active', 'id', 'x', 'y', 'dragOffsetX', 'dragOffsetY']
   }
 </script>
 
