@@ -70,6 +70,14 @@
             active: false,
             id: this.uuidv4()
           }
+        ],
+        arrows: [
+          {
+            x1: 100,
+            y1: 200,
+            x2: 200,
+            y2: 300
+          }
         ]
       });
     },

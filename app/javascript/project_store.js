@@ -20,6 +20,7 @@ export function createStore() {
         }
       ) {
         state.nodes = nodes;
+        state.arrows = arrows;
       },
       addNode(state, node) {
         state.nodes.push(node);
@@ -27,15 +28,16 @@ export function createStore() {
         this.commit('setAllNodesInactiveExcept', {
           exceptId: node.id
         });
-
-        for (let nodeA of state.nodes) {
-          state.arrows.push({
-            x1: nodeA.x,
-            y1: nodeA.y,
-            x2: node.x,
-            y2: node.y
-          });
-        }
+      },
+      addArrow(state, { node1, node2 }) {
+        state.arrows.push(
+          {
+            x1: node1.x,
+            y1: node1.y,
+            x2: node2.x,
+            y2: node2.y,
+          }
+        );
       },
 
       startDrag(state,
