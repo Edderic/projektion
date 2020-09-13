@@ -54,7 +54,7 @@
   import { mapState } from 'vuex';
 
   export default {
-    components: { Node },
+    components: { Node, Arrow },
     created: function created() {
       this.$store.commit('initialState', {
         nodes: [

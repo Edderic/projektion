@@ -18,12 +18,6 @@
         return 1;
       }
     },
-    data() {
-      return {
-        offsetX: null,
-        offsetY: null
-      }
-    },
     methods: {
       startDrag({offsetX, offsetY}) {
         this.$store.commit(
