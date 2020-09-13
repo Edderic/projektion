@@ -38,7 +38,7 @@
         );
       },
     },
-    props: ['active', 'id', 'x', 'y', 'dragOffsetX', 'dragOffsetY']
+    props: ['active', 'id', 'x', 'y', 'dragOffsetX', 'dragOffsetY', 'parents']
   }
 </script>
 

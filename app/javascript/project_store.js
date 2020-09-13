@@ -11,16 +11,32 @@ export function createStore() {
       arrows: [],
       draggingNode: null
     },
+    getters: {
+      getNodeById: (state) => (id) => {
+        return state.nodes.find(node => node.id === id);
+      }
+    },
     mutations: {
       initialState(
         state,
         {
           nodes,
-          arrows
         }
       ) {
         state.nodes = nodes;
-        state.arrows = arrows;
+
+        for (let node of state.nodes) {
+          for (let parentId of node.parentIds) {
+            let parent = this.getters.getNodeById(parentId);
+
+            state.arrows.push({
+              x1: parent.x,
+              y1: parent.y,
+              x2: node.x,
+              y2: node.y,
+            });
+          }
+        }
       },
       addNode(state, node) {
         state.nodes.push(node);

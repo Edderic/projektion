@@ -56,27 +56,25 @@
   export default {
     components: { Node, Arrow },
     created: function created() {
+      const node1Id = this.uuidv4();
+      const node2Id = this.uuidv4();
+
       this.$store.commit('initialState', {
         nodes: [
           {
-            x: 100,
+            x: 400,
             y: 200,
             active: true,
-            id: this.uuidv4()
+            id: node1Id,
+            parentIds: []
+
           },
           {
             x: 200,
             y: 300,
             active: false,
-            id: this.uuidv4()
-          }
-        ],
-        arrows: [
-          {
-            x1: 100,
-            y1: 200,
-            x2: 200,
-            y2: 300
+            id: node2Id,
+            parentIds: [node1Id]
           }
         ]
       });
