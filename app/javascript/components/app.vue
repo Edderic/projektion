@@ -28,10 +28,8 @@
       <Arrow
         v-for="arrow in arrows"
         :key="arrow.id"
-        :x1="arrow.x1"
-        :y1="arrow.y1"
-        :x2="arrow.x2"
-        :y2="arrow.y2"
+        :parentNode="arrow.parentNode"
+        :childNode="arrow.childNode"
       />
     </svg>
 
@@ -58,6 +56,7 @@
     created: function created() {
       const node1Id = this.uuidv4();
       const node2Id = this.uuidv4();
+      const node3Id = this.uuidv4();
 
       this.$store.commit('initialState', {
         nodes: [
@@ -75,6 +74,13 @@
             active: false,
             id: node2Id,
             parentIds: [node1Id]
+          },
+          {
+            x: 400,
+            y: 500,
+            active: false,
+            id: node3Id,
+            parentIds: [node2Id]
           }
         ]
       });

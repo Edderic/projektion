@@ -29,12 +29,13 @@ export function createStore() {
           for (let parentId of node.parentIds) {
             let parent = this.getters.getNodeById(parentId);
 
-            state.arrows.push({
-              x1: parent.x,
-              y1: parent.y,
-              x2: node.x,
-              y2: node.y,
-            });
+            this.commit(
+              'addArrow',
+              {
+                parentNode: parent,
+                childNode: node,
+              }
+            );
           }
         }
       },
@@ -45,13 +46,11 @@ export function createStore() {
           exceptId: node.id
         });
       },
-      addArrow(state, { node1, node2 }) {
+      addArrow(state, { parentNode, childNode }) {
         state.arrows.push(
           {
-            x1: node1.x,
-            y1: node1.y,
-            x2: node2.x,
-            y2: node2.y,
+            parentNode,
+            childNode
           }
         );
       },
@@ -76,9 +75,6 @@ export function createStore() {
           }
         }
       },
-      // 2. Might be good to have nodes be a dictionary
-      // so we don't have to search
-      //  - had issues with doing so; nodes weren't showing up
       moveNode(state, { id, offsetX, offsetY }) {
         if (!state.draggingNode) {
           return;
