@@ -9,7 +9,7 @@
     <circle :cx="x" :cy="y" r="20" fill="white" class="node"
       v-on:click.stop='onClick'
       @mousedown='startDrag'
-      stroke='black'
+      :stroke='circleStrokeColor'
       :stroke-width="strokeWidth"
       fill-opacity=0
     />
@@ -24,13 +24,22 @@
           return 5;
         }
 
-        return 1;
+        return 3;
       },
       middleTextY() {
         return this.y + 4;
       },
       bottomTextY() {
         return this.y + 30;
+      },
+      circleStrokeColor() {
+        const mapping = {
+          'Not started': 'black',
+          'In progress': 'orange',
+          'Done': 'green',
+        };
+
+        return mapping[this.status];
       }
     },
     methods: {
@@ -63,6 +72,7 @@
        'parents',
        'middleText',
        'bottomText',
+       'status',
      ]
   }
 </script>
@@ -73,11 +83,5 @@
     min-width: 50px;
     position: absolute;
     border-radius: 100%;
-  }
-  .active {
-    border: 3px solid black;
-  }
-  .inactive {
-    border: 1px solid black;
   }
 </style>

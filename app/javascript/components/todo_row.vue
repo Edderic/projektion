@@ -61,4 +61,7 @@
   .active {
     background-color: white;
   }
+  td {
+    padding: 8px;
+  }
 </style>

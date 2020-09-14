@@ -26,6 +26,7 @@
         :dragOffsetY="todo.dragOffsetY"
         :middleText="todo.todoId"
         :bottomText="todo.title"
+        :status="todo.status"
       />
 
       <Arrow
@@ -158,7 +159,7 @@
     display: flex;
   }
   #dag_view {
-    background-color: white;
+    background-color: #eeeeee;
     border: 1px solid black;
   }
   p {
