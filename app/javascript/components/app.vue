@@ -4,6 +4,7 @@
   >
     <svg
       ref="dag"
+      id="dag_view"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 800 800"
       v-on:click='onClick'
@@ -15,14 +16,16 @@
       @dragenter.prevent
     >
       <Node
-        v-for="node in nodes"
-        :key="node.id"
-        :x="node.x"
-        :y="node.y"
-        :active="node.active"
-        :id="node.id"
-        :dragOffsetX="node.dragOffsetX"
-        :dragOffsetY="node.dragOffsetY"
+        v-for="todo in todos"
+        :key="todo.id"
+        :x="todo.x"
+        :y="todo.y"
+        :active="todo.active"
+        :id="todo.id"
+        :dragOffsetX="todo.dragOffsetX"
+        :dragOffsetY="todo.dragOffsetY"
+        :middleText="todo.todoId"
+        :bottomText="todo.title"
       />
 
       <Arrow
@@ -32,61 +35,82 @@
         :childNode="arrow.childNode"
       />
     </svg>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Assignee(s)</th>
+          <th>Estimate</th>
+          <th>Labels</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <TodoRow
+          v-for='todo in todos'
+          :id='todo.id'
+          :todoId='todo.todoId'
+          :title='todo.title'
+          :status='todo.status'
+        />
+      </tbody>
+    </table>
 
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 100" width="100px" height="35px">
-      <defs>
-        <marker id="arrowhead" markerWidth="10" markerHeight="7"
-        refX="0" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" />
-        </marker>
-      </defs>
-      <line x1="0" y1="50" x2="250" y2="50" stroke="#000"
-      stroke-width="8" marker-end="url(#arrowhead)" />
-    </svg>
   </div>
 </template>
 
 <script>
   import Node from '../components/node';
   import Arrow from '../components/arrow';
+  import TodoRow from '../components/todo_row';
   import { mapState } from 'vuex';
 
   export default {
-    components: { Node, Arrow },
+    components: { Node, Arrow, TodoRow },
     created: function created() {
       const node1Id = this.uuidv4();
       const node2Id = this.uuidv4();
       const node3Id = this.uuidv4();
 
       this.$store.commit('initialState', {
-        nodes: [
+        todos: [
           {
             x: 400,
             y: 200,
             active: true,
             id: node1Id,
-            parentIds: []
-
+            parentIds: [],
+            todoId: 'AB-123',
+            title: 'Create the route and controller',
+            status: 'Done'
           },
           {
             x: 200,
             y: 300,
             active: false,
             id: node2Id,
-            parentIds: [node1Id]
+            parentIds: [node1Id],
+            todoId: 'AB-124',
+            title: 'Show a roster',
+            status: 'In progress'
           },
           {
             x: 400,
             y: 500,
             active: false,
             id: node3Id,
-            parentIds: [node2Id]
+            parentIds: [node2Id],
+            todoId: 'BC-100',
+            title: 'Add sorting',
+            status: 'Not started'
           }
         ]
       });
     },
     computed: {
-      ...mapState(['nodes', 'arrows'])
+      ...mapState(['todos', 'arrows'])
     },
     methods: {
       onClick(event) {
@@ -96,7 +120,7 @@
             x: event.offsetX,
             y: event.offsetY,
             active: true,
-            id: this.uuidv4()
+            id: this.uuidv4(),
           }
         );
       },
@@ -130,7 +154,11 @@
 <style scoped>
   #app {
     background-color: red;
-    position: relative;
+    display: flex;
+  }
+  #dag_view {
+    background-color: white;
+    border: 1px solid black;
   }
   p {
     font-size: 2em;

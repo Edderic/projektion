@@ -1,10 +1,19 @@
 <template>
-  <circle :cx="x" :cy="y" r="20" fill="white" class="node"
-    v-on:click.stop='onClick'
-    @mousedown='startDrag'
-    stroke='black'
-    :stroke-width="strokeWidth"
-  />
+  <g>
+    <text :x="x" :y="middleTextY" font-size="10" text-anchor="middle" fill="black">
+      {{middleText}}
+    </text>
+    <text :x="x" :y="bottomTextY" font-size="10" text-anchor="middle" fill="black">
+      {{bottomText}}
+    </text>
+    <circle :cx="x" :cy="y" r="20" fill="white" class="node"
+      v-on:click.stop='onClick'
+      @mousedown='startDrag'
+      stroke='black'
+      :stroke-width="strokeWidth"
+      fill-opacity=0
+    />
+  </g>
 </template>
 
 <script>
@@ -16,6 +25,12 @@
         }
 
         return 1;
+      },
+      middleTextY() {
+        return this.y + 4;
+      },
+      bottomTextY() {
+        return this.y + 30;
       }
     },
     methods: {
@@ -38,7 +53,17 @@
         );
       },
     },
-    props: ['active', 'id', 'x', 'y', 'dragOffsetX', 'dragOffsetY', 'parents']
+    props: [
+      'active',
+       'id',
+       'x',
+       'y',
+       'dragOffsetX',
+       'dragOffsetY',
+       'parents',
+       'middleText',
+       'bottomText',
+     ]
   }
 </script>
 

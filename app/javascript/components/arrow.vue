@@ -1,14 +1,16 @@
 <template>
   <g>
-  <line :x1="arrowTip1X" :y1="arrowTip1Y" :x2="bodyX2" :y2="bodyY2" stroke="black" stroke-width="3"/>
-  <line :x1="arrowTip2X" :y1="arrowTip2Y" :x2="bodyX2" :y2="bodyY2" stroke="black" stroke-width="3"/>
-  <line :x1="bodyX1" :y1="bodyY1" :x2="bodyX2" :y2="bodyY2" stroke="black" stroke-width="3"/>
+    <polygon :points="arrowHeadPoints"/>
+    <line :x1="bodyX1" :y1="bodyY1" :x2="bodyX2" :y2="bodyY2" stroke="black" stroke-width="3"/>
   </g>
 </template>
 
 <script>
   export default {
     computed: {
+      arrowHeadPoints() {
+        return `${this.arrowTip1X}, ${this.arrowTip1Y} ${this.bodyX2}, ${this.bodyY2} ${this.arrowTip2X}, ${this.arrowTip2Y}`
+      },
       bodyX1() {
         return this.parentNode.x + (-20 * Math.cos((this.offsetAngle + this.angle) * Math.PI / 180.0));
       },

@@ -7,40 +7,40 @@ Vue.use(Vuex);
 export function createStore() {
   return new Vuex.Store({
     state: {
-      nodes: [],
+      todos: [],
       arrows: [],
       draggingNode: null
     },
     getters: {
-      getNodeById: (state) => (id) => {
-        return state.nodes.find(node => node.id === id);
+      getTodoById: (state) => (id) => {
+        return state.todos.find(todo => todo.id === id);
       }
     },
     mutations: {
       initialState(
         state,
         {
-          nodes,
+          todos,
         }
       ) {
-        state.nodes = nodes;
+        state.todos = todos;
 
-        for (let node of state.nodes) {
-          for (let parentId of node.parentIds) {
-            let parent = this.getters.getNodeById(parentId);
+        for (let todo of state.todos) {
+          for (let parentId of todo.parentIds) {
+            let parent = this.getters.getTodoById(parentId);
 
             this.commit(
               'addArrow',
               {
                 parentNode: parent,
-                childNode: node,
+                childNode: todo,
               }
             );
           }
         }
       },
       addNode(state, node) {
-        state.nodes.push(node);
+        state.todos.push(node);
 
         this.commit('setAllNodesInactiveExcept', {
           exceptId: node.id
@@ -62,7 +62,7 @@ export function createStore() {
           dragOffsetY
         }
       ) {
-        for (let node of state.nodes) {
+        for (let node of state.todos) {
           if (node.id == id) {
             node.active = true;
             node.dragOffsetX = dragOffsetX;
@@ -89,10 +89,14 @@ export function createStore() {
       },
 
       setAllNodesInactiveExcept(state, { exceptId }) {
-        for (let node of state.nodes) {
+        for (let node of state.todos) {
           node.active = node.id == exceptId;
         }
-      }
+      },
+      setStatusForTodo(state, { id, status }) {
+        let node = this.getters.getTodoById(id);
+        node.status = status;
+      },
     }
   });
 }
