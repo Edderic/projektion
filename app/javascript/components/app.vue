@@ -154,7 +154,7 @@
 
 <style scoped>
   #app {
-    background-color: red;
+    background-color: white;
     display: flex;
   }
   #dag_view {

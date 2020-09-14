@@ -56,7 +56,7 @@
 
 <style scoped>
   .inactive {
-    background-color: #eab5b5;
+    background-color: #e6e6e6;
   }
   .active {
     background-color: white;
