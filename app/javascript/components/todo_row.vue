@@ -1,5 +1,5 @@
 <template>
-    <tr>
+    <tr :class='rowClass'>
       <td>{{ todoId }}</td>
       <td>{{ title }}</td>
       <td>
@@ -15,6 +15,13 @@
 <script>
   export default {
     computed: {
+      rowClass() {
+        if (this.active) {
+          return ['active'];
+        }
+
+        return ['inactive'];
+      }
     },
     methods: {
       setStatus(e) {
@@ -39,10 +46,19 @@
       },
       'status': {
         'default': 'edit me'
+      },
+      'active': {
+        'default': false
       }
     }
 }
 </script>
 
 <style scoped>
+  .inactive {
+    background-color: #eab5b5;
+  }
+  .active {
+    background-color: white;
+  }
 </style>

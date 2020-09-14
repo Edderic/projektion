@@ -54,6 +54,7 @@
           :todoId='todo.todoId'
           :title='todo.title'
           :status='todo.status'
+          :active='todo.active'
         />
       </tbody>
     </table>
