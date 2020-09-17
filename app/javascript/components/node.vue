@@ -21,7 +21,7 @@
     computed: {
       strokeWidth() {
         if (this.active) {
-          return 5;
+          return 6;
         }
 
         return 3;

@@ -15,6 +15,12 @@
       @dragover.prevent
       @dragenter.prevent
     >
+      <Arrow
+        v-for="arrow in arrows"
+        :key="arrow.id"
+        :parentNode="arrow.parentNode"
+        :childNode="arrow.childNode"
+      />
       <Node
         v-for="todo in todos"
         :key="todo.id"
@@ -29,18 +35,12 @@
         :status="todo.status"
       />
 
-      <Arrow
-        v-for="arrow in arrows"
-        :key="arrow.id"
-        :parentNode="arrow.parentNode"
-        :childNode="arrow.childNode"
-      />
     </svg>
     <table>
       <thead>
         <tr>
           <th>ID</th>
-          <th>Name</th>
+          <th>Title</th>
           <th>Status</th>
           <th>Assignee(s)</th>
           <th>Estimate</th>
@@ -51,11 +51,13 @@
       <tbody>
         <TodoRow
           v-for='todo in todos'
+          :key='todo.id'
           :id='todo.id'
           :todoId='todo.todoId'
           :title='todo.title'
           :status='todo.status'
           :active='todo.active'
+          :canEdit='todo.canEdit'
         />
       </tbody>
     </table>
@@ -86,7 +88,8 @@
             parentIds: [],
             todoId: 'AB-123',
             title: 'Create the route and controller',
-            status: 'Done'
+            status: 'Done',
+            canEdit: false
           },
           {
             x: 200,
@@ -96,7 +99,8 @@
             parentIds: [node1Id],
             todoId: 'AB-124',
             title: 'Show a roster',
-            status: 'In progress'
+            status: 'In progress',
+            canEdit: false
           },
           {
             x: 400,
@@ -106,7 +110,8 @@
             parentIds: [node2Id],
             todoId: 'BC-100',
             title: 'Add sorting',
-            status: 'Not started'
+            status: 'Not started',
+            canEdit: false
           }
         ]
       });
@@ -123,6 +128,10 @@
             y: event.offsetY,
             active: true,
             id: this.uuidv4(),
+            parentIds: [],
+            title: 'edit me',
+            status: 'Not started',
+            canEdit: false
           }
         );
       },

@@ -93,9 +93,12 @@ export function createStore() {
           node.active = node.id == exceptId;
         }
       },
-      setStatusForTodo(state, { id, status }) {
+      setTodo(state, { id, dict }) {
         let node = this.getters.getTodoById(id);
-        node.status = status;
+
+        for (let key in dict) {
+          node[key] = dict[key];
+        }
       },
     }
   });
