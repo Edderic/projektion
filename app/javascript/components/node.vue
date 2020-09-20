@@ -44,6 +44,7 @@
     },
     methods: {
       startDrag({offsetX, offsetY}) {
+        console.log('startDrag')
         this.$store.commit(
           'startDrag',
           {
@@ -54,6 +55,20 @@
         )
       },
       onClick(e) {
+        this.$store.commit(
+          'toggleArrow',
+          {
+            id: this.id
+          }
+        );
+
+        this.$store.commit(
+          'toggleActive',
+          {
+            id: this.id
+          }
+        );
+
         this.$store.commit(
           'setAllNodesInactiveExcept',
           {

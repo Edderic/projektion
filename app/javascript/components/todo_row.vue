@@ -1,26 +1,22 @@
 <template>
-    <tr :class='rowClass' @click='onClick' v-if='editable'>
-      <td><div class="todoId"><input type="textarea" :value="todoId" @change='setTodoId'></div></td>
-      <td><div class="title"><input type="textarea" @click.stop :value="title" @change='setTitle'></div></td>
-      <td>
-        <select :value='status' class="status-select" @change='setStatus'>
-          <option>Not started</option>
-          <option>In progress</option>
-          <option>Done</option>
-        </select>
-      </td>
-    </tr>
-    <tr :class='rowClass' @click='onClick' v-else>
-      <td><div class="todoId">{{ todoId }}</div></td>
-      <td><div>{{ title }}</div></td>
-      <td>
-        <select :value='status' class="status-select" @change='setStatus'>
-          <option>Not started</option>
-          <option>In progress</option>
-          <option>Done</option>
-        </select>
-      </td>
-    </tr>
+    <div class='rowClass' @click='onClick' v-if='editable'>
+      <div class="table-id"><input type="textarea" :value="todoId" @change='setTodoId'></div>
+      <div class="table-title"><input type="textarea" @click.stop :value="title" @change='setTitle'></div>
+      <select :value='status' class="table-status status-select" @change='setStatus'>
+        <option>Not started</option>
+        <option>In progress</option>
+        <option>Done</option>
+      </select>
+    </div>
+    <div class='rowClass' @click='onClick' v-else>
+      <div class="table-id">{{ todoId }}</div>
+      <div class="table-title">{{ title }}</div>
+      <select :value='status' class="table-status status-select" @change='setStatus'>
+        <option>Not started</option>
+        <option>In progress</option>
+        <option>Done</option>
+      </select>
+    </div>
 </template>
 
 <script>
@@ -56,7 +52,8 @@
           {
             id: this.id,
             dict: {
-              canEdit: !this.canEdit
+              canEdit: !this.canEdit,
+              active: true
             }
           }
         )
@@ -115,8 +112,14 @@
 </script>
 
 <style scoped>
-  .todoId, .title {
-    width: 100px;
+  .table-id {
+    width: 4em;
+  }
+  .table-title {
+    width: 8em;
+  }
+  .table-status {
+    width: 7em;
   }
   input {
     width: 100px;
@@ -129,5 +132,8 @@
   }
   td {
     padding: 8px;
+  }
+  .rowClass {
+    display: flex;
   }
 </style>

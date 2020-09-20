@@ -36,32 +36,27 @@
       />
 
     </svg>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Title</th>
-          <th>Status</th>
-          <th>Assignee(s)</th>
-          <th>Estimate</th>
-          <th>Labels</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <TodoRow
-          v-for='todo in todos'
-          :key='todo.id'
-          :id='todo.id'
-          :todoId='todo.todoId'
-          :title='todo.title'
-          :status='todo.status'
-          :active='todo.active'
-          :canEdit='todo.canEdit'
-        />
-      </tbody>
-    </table>
-
+    <div>
+      <div class='table-heading'>
+          <div class='table-id'>ID</div>
+          <div class='table-title'>Title</div>
+          <div class='table-status'>Status</div>
+          <div>Assignee(s)</div>
+          <div>Estimate</div>
+          <div>Labels</div>
+          <div>Description</div>
+      </div>
+      <TodoRow
+        v-for='todo in todos'
+        :key='todo.id'
+        :id='todo.id'
+        :todoId='todo.todoId'
+        :title='todo.title'
+        :status='todo.status'
+        :active='todo.active'
+        :canEdit='todo.canEdit'
+      />
+    </div>
   </div>
 </template>
 
@@ -174,5 +169,21 @@
   p {
     font-size: 2em;
     text-align: center;
+  }
+
+  .table-heading {
+    display: flex;
+  }
+
+  .table-id {
+    width: 4em;
+  }
+
+  .table-title {
+    width: 8em;
+  }
+
+  .table-status {
+    width: 7em;
   }
 </style>

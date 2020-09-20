@@ -9,11 +9,19 @@ export function createStore() {
     state: {
       todos: [],
       arrows: [],
-      draggingNode: null
+      draggingNode: null,
     },
     getters: {
       getTodoById: (state) => (id) => {
         return state.todos.find(todo => todo.id === id);
+      },
+      getArrowByNodeIds: (state) => (parentNodeId, childNodeId) => {
+        return state.arrows.find(
+          arrow => arrow.parentNode.id === parentNodeId && arrow.childNode.id === childNodeId
+        );
+      },
+      getActiveNode: (state) => () => {
+        return state.todos.find(todo => todo.active);
       }
     },
     mutations: {
@@ -25,7 +33,7 @@ export function createStore() {
       ) {
         state.todos = todos;
 
-        for (let todo of state.todos) {
+        for (let todo of todos) {
           for (let parentId of todo.parentIds) {
             let parent = this.getters.getTodoById(parentId);
 
@@ -41,6 +49,8 @@ export function createStore() {
       },
       addNode(state, node) {
         state.todos.push(node);
+
+        node.active = true;
 
         this.commit('setAllNodesInactiveExcept', {
           exceptId: node.id
@@ -64,12 +74,10 @@ export function createStore() {
       ) {
         for (let node of state.todos) {
           if (node.id == id) {
-            node.active = true;
             node.dragOffsetX = dragOffsetX;
             node.dragOffsetY = dragOffsetY;
             state.draggingNode = node;
           } else {
-            node.active = false;
             node.dragOffsetX = null;
             node.dragOffsetY = null;
           }
@@ -88,9 +96,19 @@ export function createStore() {
         state.draggingNode = null;
       },
 
+      removeArrow(state, { parentNode, childNode }) {
+        const arrowIndex = state.arrows.findIndex(
+          (arrow) => arrow.parentNode == parentNode && arrow.childNode == childNode
+        );
+
+        state.arrows.splice(arrowIndex, 1);
+      },
+
       setAllNodesInactiveExcept(state, { exceptId }) {
         for (let node of state.todos) {
-          node.active = node.id == exceptId;
+          if (node.id != exceptId) {
+            node.active = false;
+          }
         }
       },
       setTodo(state, { id, dict }) {
@@ -100,6 +118,56 @@ export function createStore() {
           node[key] = dict[key];
         }
       },
+      toggleArrow(state, {id}) {
+        const parentNode = this.getters.getActiveNode();
+        const childNode = this.getters.getTodoById(id);
+
+        if (!parentNode || !childNode || parentNode === childNode)
+          return;
+
+        const arrow = this.getters.getArrowByNodeIds(
+          parentNode.id,
+          childNode.id
+        );
+
+        const backwardArrow = this.getters.getArrowByNodeIds(
+          childNode.id,
+          parentNode.id
+        );
+
+        if (backwardArrow) {
+          this.commit(
+            'removeArrow',
+            {
+              parentNode: childNode,
+              childNode: parentNode
+            }
+          );
+        }
+
+        if (arrow) {
+          this.commit(
+            'removeArrow',
+            {
+              parentNode,
+              childNode
+            }
+          );
+        }
+        else {
+          this.commit(
+            'addArrow',
+            {
+              parentNode,
+              childNode
+            }
+          );
+        }
+      },
+      toggleActive(state, {id}) {
+        let todo = this.getters.getTodoById(id);
+        todo.active = !todo.active;
+      }
     }
   });
 }
