@@ -1,5 +1,5 @@
 <template>
-    <div class='rowClass' @click='onClick' v-if='editable'>
+    <div :class='rowClass' @click='onClick' v-if='editable'>
       <div class="table-id"><input type="textarea" :value="todoId" @change='setTodoId'></div>
       <div class="table-title"><input type="textarea" @click.stop :value="title" @change='setTitle'></div>
       <select :value='status' class="table-status status-select" @change='setStatus'>
@@ -8,7 +8,7 @@
         <option>Done</option>
       </select>
     </div>
-    <div class='rowClass' @click='onClick' v-else>
+    <div :class='rowClass' @click='onClick' v-else>
       <div class="table-id">{{ todoId }}</div>
       <div class="table-title">{{ title }}</div>
       <select :value='status' class="table-status status-select" @change='setStatus'>
@@ -24,10 +24,10 @@
     computed: {
       rowClass() {
         if (this.active) {
-          return ['active'];
+          return ['row', 'active'];
         }
 
-        return ['inactive'];
+        return ['row', 'inactive'];
       },
       editable() {
         return this.active && this.canEdit;
@@ -133,7 +133,7 @@
   td {
     padding: 8px;
   }
-  .rowClass {
+  .row {
     display: flex;
   }
 </style>

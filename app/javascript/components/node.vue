@@ -63,13 +63,6 @@
         );
 
         this.$store.commit(
-          'toggleActive',
-          {
-            id: this.id
-          }
-        );
-
-        this.$store.commit(
           'setAllNodesInactiveExcept',
           {
             exceptId: this.id

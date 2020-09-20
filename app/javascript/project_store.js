@@ -10,6 +10,10 @@ export function createStore() {
       todos: [],
       arrows: [],
       draggingNode: null,
+      draggingNodeStartX: null,
+      draggingNodeStartY: null,
+      draggingNodeDropX: null,
+      draggingNodeDropY: null
     },
     getters: {
       getTodoById: (state) => (id) => {
@@ -77,6 +81,8 @@ export function createStore() {
             node.dragOffsetX = dragOffsetX;
             node.dragOffsetY = dragOffsetY;
             state.draggingNode = node;
+            state.draggingNodeStartX = node.x;
+            state.draggingNodeStartY = node.y;
           } else {
             node.dragOffsetX = null;
             node.dragOffsetY = null;
@@ -93,6 +99,11 @@ export function createStore() {
       },
 
       dropNode(state) {
+        if (state.draggingNode) {
+          state.draggingNodeDropX = state.draggingNode.x;
+          state.draggingNodeDropY = state.draggingNode.y;
+        }
+
         state.draggingNode = null;
       },
 
@@ -122,8 +133,22 @@ export function createStore() {
         const parentNode = this.getters.getActiveNode();
         const childNode = this.getters.getTodoById(id);
 
-        if (!parentNode || !childNode || parentNode === childNode)
+        if (!parentNode || !childNode || parentNode === childNode ) {
+          if (
+            state.draggingNodeStartX &&
+            state.draggingNodeStartX == state.draggingNodeDropX &&
+            state.draggingNodeStartY == state.draggingNodeDropY
+          ) {
+            this.commit(
+              'toggleActive',
+              {
+                id
+              }
+            );
+          }
+
           return;
+        }
 
         const arrow = this.getters.getArrowByNodeIds(
           parentNode.id,
@@ -143,25 +168,26 @@ export function createStore() {
               childNode: parentNode
             }
           );
-        }
+        } else {
 
-        if (arrow) {
-          this.commit(
-            'removeArrow',
-            {
-              parentNode,
-              childNode
-            }
-          );
-        }
-        else {
-          this.commit(
-            'addArrow',
-            {
-              parentNode,
-              childNode
-            }
-          );
+          if (arrow) {
+            this.commit(
+              'removeArrow',
+              {
+                parentNode,
+                childNode
+              }
+            );
+          }
+          else {
+            this.commit(
+              'addArrow',
+              {
+                parentNode,
+                childNode
+              }
+            );
+          }
         }
       },
       toggleActive(state, {id}) {
