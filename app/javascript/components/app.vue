@@ -1,5 +1,7 @@
 <template>
   <div
+    v-on:keyup.delete='deleteTodo'
+    tabIndex="0"
     id='app'
   >
     <svg
@@ -138,6 +140,9 @@
             offsetY
           }
         );
+      },
+      deleteTodo(e) {
+        this.$store.commit('deleteTodo');
       },
       drop(event) {
         this.$store.commit('dropNode');

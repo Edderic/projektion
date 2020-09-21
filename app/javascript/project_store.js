@@ -69,6 +69,28 @@ export function createStore() {
         );
       },
 
+      deleteTodo(state) {
+        const activeNode = this.getters.getActiveNode();
+
+        if (activeNode) {
+          const todoIndex = state.todos.findIndex(
+            (todo) => todo.id == activeNode.id
+          );
+
+          state.todos.splice(todoIndex, 1);
+
+          // remove associated arrows
+          let arrows = [];
+
+          for (let arrow of state.arrows) {
+            if (arrow.parentNode !== activeNode && arrow.childNode !== activeNode) {
+              arrows.push(arrow);
+            }
+          }
+
+          state.arrows = arrows;
+        }
+      },
       startDrag(state,
         {
           id,
