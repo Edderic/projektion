@@ -8,6 +8,7 @@ export function createStore() {
   return new Vuex.Store({
     state: {
       todos: [],
+      tabIndex: -1,
       arrows: [],
       draggingNode: null,
       draggingNodeStartX: null,
@@ -53,8 +54,6 @@ export function createStore() {
       },
       addNode(state, node) {
         state.todos.push(node);
-
-        node.active = true;
 
         this.commit('setAllNodesInactiveExcept', {
           exceptId: node.id
@@ -143,6 +142,9 @@ export function createStore() {
             node.active = false;
           }
         }
+      },
+      setTabIndex(state, { index }) {
+        state.tabIndex = index;
       },
       setTodo(state, { id, dict }) {
         let node = this.getters.getTodoById(id);

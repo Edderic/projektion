@@ -1,5 +1,7 @@
 <template>
-  <g>
+  <g
+    :tabIndex='tabIndex'
+  >
     <text :x="x" :y="middleTextY" font-size="10" text-anchor="middle" fill="black">
       {{middleText}}
     </text>
@@ -31,6 +33,13 @@
       },
       bottomTextY() {
         return this.y + 30;
+      },
+      tabIndex() {
+        if (this.active) {
+          return 0;
+        } else {
+          return -1;
+        }
       },
       circleStrokeColor() {
         const mapping = {
@@ -66,6 +75,13 @@
           'setAllNodesInactiveExcept',
           {
             exceptId: this.id
+          }
+        );
+
+        this.$store.commit(
+          'setTabIndex',
+          {
+            index: 0
           }
         );
       },

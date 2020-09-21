@@ -1,14 +1,16 @@
 <template>
-    <div :class='rowClass' @click='onClick' v-if='editable'>
-      <div class="table-id"><input type="textarea" :value="todoId" @change='setTodoId'></div>
-      <div class="table-title"><input type="textarea" @click.stop :value="title" @change='setTitle'></div>
+    <div :class='rowClass' @click='onClick' :tabIndex='tabIndex' v-if='editable'>
+      <div class="table-id"><input type="textarea" :value="todoId" @change='setTodoId' @keyup.delete.stop></div>
+      <div class="table-title"><input type="textarea" @click.stop :value="title" @change='setTitle' @keyup.delete.stop></div>
       <select :value='status' class="table-status status-select" @change='setStatus'>
         <option>Not started</option>
         <option>In progress</option>
         <option>Done</option>
       </select>
     </div>
-    <div :class='rowClass' @click='onClick' v-else>
+    <div :class='rowClass' @click='onClick' :tabIndex='tabIndex'
+      v-on:keyup.delete='deleteTodo'
+     v-else>
       <div class="table-id">{{ todoId }}</div>
       <div class="table-title">{{ title }}</div>
       <select :value='status' class="table-status status-select" @change='setStatus'>
@@ -29,11 +31,26 @@
 
         return ['row', 'inactive'];
       },
+      tabIndex() {
+        if (this.active) {
+          return 0;
+        } else {
+          return -1;
+        }
+      },
       editable() {
         return this.active && this.canEdit;
       },
     },
     methods: {
+      deleteTodo(e) {
+        this.$store.commit(
+          'deleteTodo',
+          {
+            id: this.id
+          }
+        );
+      },
       setStatus(e) {
         this.$store.commit(
           'setTodo',
@@ -46,7 +63,11 @@
         )
       },
       onClick(e) {
-        console.log('this.canEdit', this.canEdit)
+        this.$store.commit(
+          'setTabIndex',
+          -1
+        );
+
         this.$store.commit(
           'setTodo',
           {

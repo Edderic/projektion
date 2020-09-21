@@ -1,43 +1,46 @@
 <template>
   <div
-    v-on:keyup.delete='deleteTodo'
-    tabIndex="0"
     id='app'
   >
-    <svg
-      ref="dag"
-      id="dag_view"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 800 800"
-      v-on:click='onClick'
-      @mousemove='move'
-      @mouseup='drop'
-      width="800"
-      height="800"
-      @dragover.prevent
-      @dragenter.prevent
+    <div
+      :tabIndex='tabIndex'
+      v-on:keyup.delete='deleteTodo'
     >
-      <Arrow
-        v-for="arrow in arrows"
-        :key="arrow.id"
-        :parentNode="arrow.parentNode"
-        :childNode="arrow.childNode"
-      />
-      <Node
-        v-for="todo in todos"
-        :key="todo.id"
-        :x="todo.x"
-        :y="todo.y"
-        :active="todo.active"
-        :id="todo.id"
-        :dragOffsetX="todo.dragOffsetX"
-        :dragOffsetY="todo.dragOffsetY"
-        :middleText="todo.todoId"
-        :bottomText="todo.title"
-        :status="todo.status"
-      />
+      <svg
+        ref="dag"
+        id="dag_view"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 800 800"
+        v-on:click='onClick'
+        @mousemove='move'
+        @mouseup='drop'
+        width="800"
+        height="800"
+        @dragover.prevent
+        @dragenter.prevent
+      >
+        <Arrow
+          v-for="arrow in arrows"
+          :key="arrow.id"
+          :parentNode="arrow.parentNode"
+          :childNode="arrow.childNode"
+        />
+        <Node
+          v-for="todo in todos"
+          :key="todo.id"
+          :x="todo.x"
+          :y="todo.y"
+          :active="todo.active"
+          :id="todo.id"
+          :dragOffsetX="todo.dragOffsetX"
+          :dragOffsetY="todo.dragOffsetY"
+          :middleText="todo.todoId"
+          :bottomText="todo.title"
+          :status="todo.status"
+        />
 
-    </svg>
+      </svg>
+    </div>
     <div>
       <div class='table-heading'>
           <div class='table-id'>ID</div>
@@ -114,21 +117,36 @@
       });
     },
     computed: {
-      ...mapState(['todos', 'arrows'])
+      ...mapState(['todos', 'arrows', 'tabIndex'])
     },
     methods: {
+      deleteTodo(e) {
+        this.$store.commit(
+          'deleteTodo',
+          {
+            id: this.id
+          }
+        );
+      },
       onClick(event) {
         this.$store.commit(
           'addNode',
           {
             x: event.offsetX,
             y: event.offsetY,
-            active: true,
+            active: false,
             id: this.uuidv4(),
             parentIds: [],
             title: 'edit me',
             status: 'Not started',
             canEdit: false
+          }
+        );
+
+        this.$store.commit(
+          'setTabIndex',
+          {
+            index: 0
           }
         );
       },
@@ -140,9 +158,6 @@
             offsetY
           }
         );
-      },
-      deleteTodo(e) {
-        this.$store.commit('deleteTodo');
       },
       drop(event) {
         this.$store.commit('dropNode');
