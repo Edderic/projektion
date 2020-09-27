@@ -41,15 +41,12 @@
 
       </svg>
     </div>
-    <div>
+    <div class="todo-rows">
       <div class='table-heading'>
           <div class='header-cell header-id'>ID</div>
           <div class='header-cell header-title'>Title</div>
           <div class='header-cell header-status'>Status</div>
           <div class='header-cell header-estimate'>Estimate</div>
-          <div>Assignee(s)</div>
-          <div>Labels</div>
-          <div>Description</div>
       </div>
       <TodoRow
         v-for='todo in todos'
@@ -193,6 +190,7 @@
 
   .header-cell {
     padding: 10px;
+    border-bottom: 1px solid black;
   }
 
   .table-heading {
@@ -213,5 +211,9 @@
 
   .header-estimate {
     width: 300px;
+  }
+
+  .todo-rows {
+    border: 1px solid black;
   }
 </style>
