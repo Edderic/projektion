@@ -5,6 +5,7 @@
         :viewBox="barGraphViewBox"
         :width=barGraphWidth
         :height=barGraphHeight
+        @mouseleave="mouseleave"
         @click.stop
       >
         <text
@@ -54,6 +55,9 @@
       }
     },
     methods: {
+      mouseleave() {
+        this.$store.commit('finishUpdateEstimate');
+      }
     },
     props: {
       'numberOfBars': {
