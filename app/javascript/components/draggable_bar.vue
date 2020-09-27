@@ -6,7 +6,7 @@
       :width="barWidth"
       :height="height"
       stroke="white"
-      fill="blue"
+      fill="rgb(50, 158, 168, 0.5)"
     />
     <rect
       :x="barWidth * (n-1)"
