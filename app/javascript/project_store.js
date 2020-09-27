@@ -14,7 +14,8 @@ export function createStore() {
       draggingNodeStartX: null,
       draggingNodeStartY: null,
       draggingNodeDropX: null,
-      draggingNodeDropY: null
+      draggingNodeDropY: null,
+      updatingEstimate: false
     },
     getters: {
       getTodoById: (state) => (id) => {
@@ -27,6 +28,9 @@ export function createStore() {
       },
       getActiveNode: (state) => () => {
         return state.todos.find(todo => todo.active);
+      },
+      isUpdatingEstimate: (state) => () => {
+        return state.updatingEstimate;
       }
     },
     mutations: {
@@ -157,7 +161,7 @@ export function createStore() {
         const parentNode = this.getters.getActiveNode();
         const childNode = this.getters.getTodoById(id);
 
-        if (!parentNode || !childNode || parentNode === childNode ) {
+        if (!parentNode || !childNode || parentNode === childNode) {
           if (
             state.draggingNodeStartX &&
             state.draggingNodeStartX == state.draggingNodeDropX &&
@@ -217,6 +221,12 @@ export function createStore() {
       toggleActive(state, {id}) {
         let todo = this.getters.getTodoById(id);
         todo.active = !todo.active;
+      },
+      startUpdateEstimate(state) {
+        state.updatingEstimate = true;
+      },
+      finishUpdateEstimate(state) {
+        state.updatingEstimate = false;
       }
     }
   });

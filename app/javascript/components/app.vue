@@ -46,8 +46,8 @@
           <div class='table-id'>ID</div>
           <div class='table-title'>Title</div>
           <div class='table-status'>Status</div>
+          <div class='table-estimate'>Estimate</div>
           <div>Assignee(s)</div>
-          <div>Estimate</div>
           <div>Labels</div>
           <div>Description</div>
       </div>
@@ -205,5 +205,8 @@
 
   .table-status {
     width: 7em;
+  }
+  .table-estimate {
+    width: 200px;
   }
 </style>

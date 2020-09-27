@@ -7,6 +7,8 @@
         <option>In progress</option>
         <option>Done</option>
       </select>
+      <DraggableBarGraph
+      />
     </div>
     <div :class='rowClass' @click='onClick' :tabIndex='tabIndex'
       v-on:keyup.delete='deleteTodo'
@@ -18,11 +20,15 @@
         <option>In progress</option>
         <option>Done</option>
       </select>
+      <DraggableBarGraph
+      />
     </div>
 </template>
 
 <script>
+  import DraggableBarGraph from '../components/draggable_bar_graph';
   export default {
+    components: { DraggableBarGraph },
     computed: {
       rowClass() {
         if (this.active) {
@@ -133,6 +139,9 @@
 </script>
 
 <style scoped>
+  .prior {
+
+  }
   .table-id {
     width: 4em;
   }
