@@ -210,6 +210,7 @@
   .header-status {
     width: 7em;
   }
+
   .header-estimate {
     width: 300px;
   }

@@ -9,8 +9,10 @@
           <option>Done</option>
         </select>
       </div>
-      <DraggableBarGraph
-      />
+      <div class='table-cell'>
+        <DraggableBarGraph
+        />
+      </div>
     </div>
     <div :class='rowClass' @click='onClick' :tabIndex='tabIndex'
       v-on:keyup.delete='deleteTodo'
@@ -24,8 +26,10 @@
           <option>Done</option>
         </select>
       </div>
-      <DraggableBarGraph
-      />
+      <div class='table-cell'>
+        <DraggableBarGraph
+        />
+      </div>
     </div>
 </template>
 
