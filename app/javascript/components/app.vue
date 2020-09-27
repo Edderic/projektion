@@ -43,10 +43,10 @@
     </div>
     <div>
       <div class='table-heading'>
-          <div class='table-id'>ID</div>
-          <div class='table-title'>Title</div>
-          <div class='table-status'>Status</div>
-          <div class='table-estimate'>Estimate</div>
+          <div class='header-cell header-id'>ID</div>
+          <div class='header-cell header-title'>Title</div>
+          <div class='header-cell header-status'>Status</div>
+          <div class='header-cell header-estimate'>Estimate</div>
           <div>Assignee(s)</div>
           <div>Labels</div>
           <div>Description</div>
@@ -191,22 +191,26 @@
     text-align: center;
   }
 
+  .header-cell {
+    padding: 10px;
+  }
+
   .table-heading {
     display: flex;
   }
 
-  .table-id {
+  .header-id {
     width: 4em;
   }
 
-  .table-title {
+  .header-title {
     width: 8em;
   }
 
-  .table-status {
+  .header-status {
     width: 7em;
   }
-  .table-estimate {
-    width: 200px;
+  .header-estimate {
+    width: 300px;
   }
 </style>

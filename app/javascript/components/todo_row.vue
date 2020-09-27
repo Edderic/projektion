@@ -1,25 +1,29 @@
 <template>
     <div :class='rowClass' @click='onClick' :tabIndex='tabIndex' v-if='editable'>
-      <div class="table-id"><input type="textarea" :value="todoId" @change='setTodoId' @keyup.delete.stop></div>
-      <div class="table-title"><input type="textarea" @click.stop :value="title" @change='setTitle' @keyup.delete.stop></div>
-      <select :value='status' class="table-status status-select" @change='setStatus'>
-        <option>Not started</option>
-        <option>In progress</option>
-        <option>Done</option>
-      </select>
+      <div class="table-cell table-id"><input type="textarea" :value="todoId" @change='setTodoId' @keyup.delete.stop></div>
+      <div class="table-cell table-title"><input type="textarea" @click.stop :value="title" @change='setTitle' @keyup.delete.stop></div>
+      <div class='table-cell table-status'>
+        <select :value='status' class="status-select" @change='setStatus'>
+          <option>Not started</option>
+          <option>In progress</option>
+          <option>Done</option>
+        </select>
+      </div>
       <DraggableBarGraph
       />
     </div>
     <div :class='rowClass' @click='onClick' :tabIndex='tabIndex'
       v-on:keyup.delete='deleteTodo'
      v-else>
-      <div class="table-id">{{ todoId }}</div>
-      <div class="table-title">{{ title }}</div>
-      <select :value='status' class="table-status status-select" @change='setStatus'>
-        <option>Not started</option>
-        <option>In progress</option>
-        <option>Done</option>
-      </select>
+      <div class="table-cell table-id">{{ todoId }}</div>
+      <div class="table-cell table-title">{{ title }}</div>
+      <div class='table-cell table-status'>
+        <select :value='status' class="status-select" @change='setStatus'>
+          <option>Not started</option>
+          <option>In progress</option>
+          <option>Done</option>
+        </select>
+      </div>
       <DraggableBarGraph
       />
     </div>
@@ -142,15 +146,20 @@
   .prior {
 
   }
+  .table-cell {
+    padding: 10px;
+  }
   .table-id {
     width: 4em;
   }
   .table-title {
     width: 8em;
   }
+
   .table-status {
     width: 7em;
   }
+
   input {
     width: 100px;
   }
