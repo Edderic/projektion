@@ -15,12 +15,22 @@
           class='x-label'
         >{{tick.text}}</text>
 
+        <line
+          x1="0"
+          :y1="barGraphHeight - bottomOffset"
+          :x2="barGraphWidth"
+          :y2="barGraphHeight - bottomOffset"
+          stroke="black"
+          strokeWidth="1"
+        />
+
         <DraggableBar
           v-for="n in numberOfBars"
           :key=n
           :barWidth="barWidth"
           :n=n
           :maxHeight="barGraphHeight"
+          :bottomOffset="bottomOffset"
         />
       </svg>
 </template>
@@ -60,6 +70,9 @@
       }
     },
     props: {
+      'bottomOffset': {
+        'default': 30
+      },
       'numberOfBars': {
         'default': 29
       },
