@@ -11,6 +11,8 @@
       </div>
       <div class='table-cell'>
         <DraggableBarGraph
+          :id='id'
+          :values='estimates'
         />
       </div>
     </div>
@@ -28,6 +30,8 @@
       </div>
       <div class='table-cell'>
         <DraggableBarGraph
+          :id='id'
+          :values='estimates'
         />
       </div>
     </div>
@@ -141,7 +145,11 @@
       },
       'canEdit': {
         'default': false
-      }
+      },
+      'estimates': {
+        'default': [25, 25, 25, 25, 25, 25, 25,25, 25, 25, 25, 25, 25, 25,25, 25, 25, 25, 25, 25, 25,25, 25, 25, 25, 25, 25, 25]
+      },
+      'todo': {}
     }
 }
 </script>

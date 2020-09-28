@@ -1,7 +1,7 @@
 <template>
   <g>
     <rect
-      :x="barWidth * (n-1)"
+      :x="barWidth * n"
       :y=y
       :width="barWidth"
       :height="height"
@@ -9,7 +9,7 @@
       fill="rgb(50, 158, 168, 0.5)"
     />
     <rect
-      :x="barWidth * (n-1)"
+      :x="barWidth * n"
       y=0
       :width="barWidth"
       :height=maxHeight
@@ -36,7 +36,12 @@
         } else {
           return this.maxHeight - this.bottomOffset - this.y;
         }
+      },
+
+      y() {
+        return this.maxHeight - this.bottomOffset - this.value;
       }
+
     },
     methods: {
       mousedown(e) {
@@ -45,29 +50,37 @@
       },
       mousemove(e) {
         if (this.$store.getters.isUpdatingEstimate()) {
+          let y;
+
           if (this.maxHeight - this.bottomOffset > e.offsetY) {
-            this.y = e.offsetY;
-          } else if (this.maxHeight - this.bottomOffset < e.offsetY) {
-            this.y = this.maxHeight - this.bottomOffset - 1;
+            y = e.offsetY;
+          } else {
+            y = this.maxHeight - this.bottomOffset - 1;
           }
+
+          this.$store.commit(
+            'updateTodoEstimate',
+            {
+              id: this.id,
+              estimateIndex: this.n,
+              value: this.maxHeight - this.bottomOffset - y
+            }
+          );
         }
       },
       mouseup(e) {
         this.$store.commit('finishUpdateEstimate');
       },
     },
-    data() {
-      return {
-        y: 25
-      }
-    },
     props: {
+      'id': {},
+      'value': { },
       'barWidth': { },
       'maxHeight': { },
       'n': { },
       'bottomOffset': {
         default: 30
-      }
+      },
     }
   }
 </script>

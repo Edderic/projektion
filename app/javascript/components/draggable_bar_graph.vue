@@ -26,9 +26,11 @@
 
         <DraggableBar
           v-for="n in numberOfBars"
-          :key=n
+          :key=n-1
+          :id="id"
+          :value="values[n-1]"
           :barWidth="barWidth"
-          :n=n
+          :n=n-1
           :maxHeight="barGraphHeight"
           :bottomOffset="bottomOffset"
         />
@@ -70,6 +72,8 @@
       }
     },
     props: {
+      'id': { },
+      'values': { },
       'bottomOffset': {
         'default': 30
       },

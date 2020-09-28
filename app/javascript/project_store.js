@@ -227,6 +227,11 @@ export function createStore() {
       },
       finishUpdateEstimate(state) {
         state.updatingEstimate = false;
+      },
+      updateTodoEstimate(state, {id, estimateIndex, value}) {
+        let todo = this.getters.getTodoById(id);
+
+        Vue.set(todo.estimates, estimateIndex, value);
       }
     }
   });

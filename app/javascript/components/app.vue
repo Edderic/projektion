@@ -57,6 +57,7 @@
         :status='todo.status'
         :active='todo.active'
         :canEdit='todo.canEdit'
+        :estimates='todo.estimates'
       />
     </div>
   </div>
@@ -86,7 +87,8 @@
             todoId: 'AB-123',
             title: 'Create the route and controller',
             status: 'Done',
-            canEdit: false
+            canEdit: false,
+            estimates: [49, 48, 47, 46, 45, 44, 43,25, 25, 25, 25, 25, 25, 25,25, 25, 25, 25, 25, 25, 25,25, 25, 25, 25, 25, 25, 25, 25]
           },
           {
             x: 200,
@@ -97,7 +99,8 @@
             todoId: 'AB-124',
             title: 'Show a roster',
             status: 'In progress',
-            canEdit: false
+            canEdit: false,
+            estimates: [25, 25, 25, 25, 25, 25, 25,25, 25, 25, 25, 25, 25, 25,25, 25, 25, 25, 25, 25, 25,25, 25, 25, 25, 25, 25, 25, 25]
           },
           {
             x: 400,
@@ -108,7 +111,8 @@
             todoId: 'BC-100',
             title: 'Add sorting',
             status: 'Not started',
-            canEdit: false
+            canEdit: false,
+            estimates: [25, 25, 25, 25, 25, 25, 25,25, 25, 25, 25, 25, 25, 25,25, 25, 25, 25, 25, 25, 25,25, 25, 25, 25, 25, 25, 25, 25]
           }
         ]
       });
