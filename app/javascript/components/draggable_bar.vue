@@ -31,7 +31,7 @@
     computed: {
       height() {
         const tmpHeight = this.maxHeight - this.bottomOffset - this.y;
-        if (tmpHeight <= 0) {
+        if (tmpHeight < 0) {
           return this.maxHeight - this.bottomOffset;
         } else {
           return this.maxHeight - this.bottomOffset - this.y;
@@ -55,7 +55,7 @@
           if (this.maxHeight - this.bottomOffset > e.offsetY) {
             y = e.offsetY;
           } else {
-            y = this.maxHeight - this.bottomOffset - 1;
+            y = this.maxHeight - this.bottomOffset;
           }
 
           this.$store.commit(
