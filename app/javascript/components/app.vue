@@ -1,6 +1,6 @@
 <template>
   <div
-    id='app'
+    id='details'
   >
     <Graph :todos='todos' :arrows='arrows' />
 
@@ -145,7 +145,7 @@
 </script>
 
 <style scoped>
-  #app {
+  #details {
     background-color: white;
     display: flex;
   }
