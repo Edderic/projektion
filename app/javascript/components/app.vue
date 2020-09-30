@@ -37,6 +37,10 @@
       const node1Id = this.$store.getters.uuidv4();
       const node2Id = this.$store.getters.uuidv4();
       const node3Id = this.$store.getters.uuidv4();
+      const reportingId1 = this.$store.getters.uuidv4();
+      const reportingId2 = this.$store.getters.uuidv4();
+      const peopleId1 = this.$store.getters.uuidv4();
+      const peopleId2 = this.$store.getters.uuidv4();
 
       this.$store.commit('initialState', {
         todos: [
@@ -75,6 +79,54 @@
             status: 'Not started',
             canEdit: false,
             estimates: [25, 25, 25, 25, 25, 25, 25,25, 25, 25, 25, 25, 25, 25,25, 25, 25, 25, 25, 25, 25,25, 25, 25, 25, 25, 25, 25, 25]
+          }
+        ],
+        labels: [
+          {
+            name: 'Reporting',
+            id: reportingId1,
+            deadline: Date.parse('2020-10-21'),
+            peopleIds: [
+              peopleId1
+            ]
+          },
+          {
+            name: 'Question Bank',
+            id: reportingId2,
+            deadline: Date.parse('2020-11-10'),
+            peopleIds: [
+              peopleId2
+            ]
+          }
+        ],
+        people: [
+          {
+            id: peopleId1,
+            name: 'Edderic',
+            availability_template: {
+              mon: 5,
+              tue: 2,
+              wed: 3,
+              thu: 3,
+              fri: 5,
+            },
+            actual_availability_schedule: {
+              "2020-10-01": 7
+            }
+          },
+          {
+            id: peopleId2,
+            name: 'Frederic',
+            availability_template: {
+              mon: 1,
+              tue: 8,
+              wed: 8,
+              thu: 3,
+              fri: 4,
+            },
+            actual_availability_schedule: {
+              "2020-10-01": 7
+            }
           }
         ]
       });
