@@ -1,5 +1,6 @@
 <template>
   <div
+    class="graph_wrapper"
     :tabIndex='tabIndex'
     v-on:keyup.delete='deleteTodo'
   >
@@ -7,12 +8,12 @@
       ref="dag"
       id="dag_view"
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 800 800"
+      viewBox="0 0 100% 100%"
       v-on:click='onClick'
       @mousemove='move'
       @mouseup='drop'
-      width="800"
-      height="800"
+      width="100%"
+      height="1000"
       @dragover.prevent
       @dragenter.prevent
     >
@@ -130,10 +131,11 @@
 </script>
 
 <style scoped>
-  .node {
-    min-height: 50px;
-    min-width: 50px;
-    position: absolute;
-    border-radius: 100%;
+  .graph_wrapper {
+    width: 50%
+  }
+  #dag_view {
+    background-color: #eeeeee;
+    border: 1px solid black;
   }
 </style>

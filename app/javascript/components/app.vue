@@ -97,10 +97,6 @@
     background-color: white;
     display: flex;
   }
-  #dag_view {
-    background-color: #eeeeee;
-    border: 1px solid black;
-  }
   p {
     font-size: 2em;
     text-align: center;
@@ -133,5 +129,6 @@
 
   .todo-rows {
     border: 1px solid black;
+    width: 50%
   }
 </style>
