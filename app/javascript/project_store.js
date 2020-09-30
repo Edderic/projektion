@@ -44,9 +44,13 @@ export function createStore() {
         state,
         {
           todos,
+          labels,
+          people
         }
       ) {
         state.todos = todos;
+        state.labels = labels;
+        state.people = people;
 
         for (let todo of todos) {
           for (let parentId of todo.parentIds) {

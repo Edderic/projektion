@@ -1,27 +1,50 @@
 <template>
-  <div
-    id='details'
-  >
-    <Graph :todos='todos' :arrows='arrows' />
-
-    <div class="todo-rows">
-      <div class='table-heading'>
-          <div class='header-cell header-id'>ID</div>
-          <div class='header-cell header-title'>Title</div>
-          <div class='header-cell header-status'>Status</div>
-          <div class='header-cell header-estimate'>Estimate</div>
+  <div id='app'>
+    <div
+      class='labels'
+    >
+      <div class='header-2-label'>
+        <div class='header-cell header-label-name'>Label</div>
+        <div class='header-cell header-label-deadline'>Deadline</div>
+        <div class='header-cell header-label-on-track'>On Track</div>
       </div>
-      <TodoRow
-        v-for='todo in todos'
-        :key='todo.id'
-        :id='todo.id'
-        :todoId='todo.todoId'
-        :title='todo.title'
-        :status='todo.status'
-        :active='todo.active'
-        :canEdit='todo.canEdit'
-        :estimates='todo.estimates'
-      />
+
+      <div
+        v-for='label in labels'
+        class='label'
+      >
+        <div class='header-cell'>{{label.name}}</div>
+        <div class='header-cell'>{{`${label.deadline.getMonth()}/${label.deadline.getDate()}`}}</div>
+        <div class='header-cell'>{{label.onTrack}}</div>
+      </div>
+    </div>
+
+
+
+    <div
+      id='details'
+    >
+      <Graph :todos='todos' :arrows='arrows' />
+
+      <div class="todo-rows">
+        <div class='table-heading'>
+            <div class='header-cell header-id'>ID</div>
+            <div class='header-cell header-title'>Title</div>
+            <div class='header-cell header-status'>Status</div>
+            <div class='header-cell header-estimate'>Estimate</div>
+        </div>
+        <TodoRow
+          v-for='todo in todos'
+          :key='todo.id'
+          :id='todo.id'
+          :todoId='todo.todoId'
+          :title='todo.title'
+          :status='todo.status'
+          :active='todo.active'
+          :canEdit='todo.canEdit'
+          :estimates='todo.estimates'
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -85,7 +108,8 @@
           {
             name: 'Reporting',
             id: reportingId1,
-            deadline: Date.parse('2020-10-21'),
+            deadline: new Date('2020-10-21'),
+            onTrack: "20%",
             peopleIds: [
               peopleId1
             ]
@@ -93,7 +117,8 @@
           {
             name: 'Question Bank',
             id: reportingId2,
-            deadline: Date.parse('2020-11-10'),
+            deadline: new Date('2020-11-10'),
+            onTrack: "30%",
             peopleIds: [
               peopleId2
             ]
@@ -132,7 +157,7 @@
       });
     },
     computed: {
-      ...mapState(['todos', 'arrows', 'tabIndex'])
+      ...mapState(['todos', 'arrows', 'tabIndex', 'labels', 'people'])
     },
     methods: {
     },
@@ -145,6 +170,26 @@
 </script>
 
 <style scoped>
+  .labels {
+    display: flex;
+    flex-direction: column;
+  }
+  .label {
+    display: flex;
+  }
+  .header-2-label {
+    display: flex;
+  }
+  .header-label-name {
+    width: 4em;
+  }
+  .header-label-deadline {
+    width: 4em;
+  }
+  .header-label-on-track {
+    width: 4em;
+  }
+
   #details {
     background-color: white;
     display: flex;
