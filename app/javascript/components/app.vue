@@ -4,18 +4,23 @@
       class='labels'
     >
       <div class='header-2-label'>
-        <div class='header-cell header-label-name'>Label</div>
-        <div class='header-cell header-label-deadline'>Deadline</div>
-        <div class='header-cell header-label-on-track'>On Track</div>
+        <div class='header-cell label-name'>Label</div>
+        <div class='header-cell label-deadline'>Deadline</div>
+        <div class='header-cell label-on-track'>On Track</div>
+        <div class='header-cell'
+          v-for='dateString in dateStrings'
+        >
+          {{ dateString.split(' ')[2] }}
+        </div>
       </div>
 
       <div
         v-for='label in labels'
         class='label'
       >
-        <div class='header-cell'>{{label.name}}</div>
-        <div class='header-cell'>{{`${label.deadline.getMonth()}/${label.deadline.getDate()}`}}</div>
-        <div class='header-cell'>{{label.onTrack}}</div>
+        <div class='header-cell label-name'>{{label.name}}</div>
+        <div class='header-cell label-deadline'>{{`${label.deadline.getMonth()}/${label.deadline.getDate()}`}}</div>
+        <div class='header-cell label-on-track'>{{label.onTrack}}</div>
       </div>
     </div>
 
@@ -157,7 +162,23 @@
       });
     },
     computed: {
-      ...mapState(['todos', 'arrows', 'tabIndex', 'labels', 'people'])
+      ...mapState(['todos', 'arrows', 'tabIndex', 'labels', 'people']),
+      dateStrings() {
+        let date = new Date()
+        let list = []
+
+        for (let i=0; i<50; i++) {
+          date.setDate(date.getDate() + 1);
+
+          let dateString = date.toDateString();
+
+          if (dateString.split(' ')[0] != 'Sat' && dateString.split(' ')[0] != 'Sun') {
+            list.push(dateString);
+          }
+        }
+
+        return list;
+      }
     },
     methods: {
     },
@@ -180,13 +201,13 @@
   .header-2-label {
     display: flex;
   }
-  .header-label-name {
+  .label-name {
     width: 4em;
   }
-  .header-label-deadline {
+  .label-deadline {
     width: 4em;
   }
-  .header-label-on-track {
+  .label-on-track {
     width: 4em;
   }
 
