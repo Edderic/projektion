@@ -45,14 +45,40 @@ export function createStore() {
         {
           todos,
           labels,
-          people
+          people,
+          numberOfDaysToPotentiallyShow
         }
       ) {
         state.todos = todos;
         state.labels = labels;
         state.people = people;
+        state.numberOfDaysToPotentiallyShow = numberOfDaysToPotentiallyShow;
 
-        for (let todo of todos) {
+        this.commit('initializeArrows');
+        this.commit('initializeAvailability');
+      },
+
+      initializeAvailability(state) {
+        for (let person of state.people) {
+          let availabilityTemplate = person.availabilityTemplate;
+
+          let date = new Date();
+
+          for (let i=0; i<state.numberOfDaysToPotentiallyShow; i++) {
+            date.setDate(date.getDate() + 1);
+            let dateString = date.toDateString();
+            let day = dateString.split(' ')[0];
+
+            if (day != 'Sun' && day != 'Sat' && !person.derivedAvailability[dateString]) {
+
+              person.derivedAvailability[dateString] = availabilityTemplate[day];
+            }
+          }
+        }
+      },
+
+      initializeArrows(state) {
+        for (let todo of state.todos) {
           for (let parentId of todo.parentIds) {
             let parent = this.getters.getTodoById(parentId);
 

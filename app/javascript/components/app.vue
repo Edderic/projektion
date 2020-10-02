@@ -1,28 +1,61 @@
 <template>
   <div id='app'>
-    <div
-      class='labels'
-    >
-      <div class='header-2-label'>
-        <div class='header-cell label-name'>Label</div>
-        <div class='header-cell label-deadline'>Deadline</div>
-        <div class='header-cell label-on-track'>On Track</div>
-        <div class='header-cell'
-          v-for='dateString in dateStrings'
-        >
-          {{ dateString.split(' ')[2] }}
-        </div>
-      </div>
+    <table>
+      <thead>
+        <tr>
+          <th colspan=8></th>
+          <th
+            v-for='dateString in dateStrings'
+          >
+            {{ dateString.split(' ')[1][0] }}
+          </th>
+        </tr>
 
-      <div
-        v-for='label in labels'
-        class='label'
-      >
-        <div class='header-cell label-name'>{{label.name}}</div>
-        <div class='header-cell label-deadline'>{{`${label.deadline.getMonth()}/${label.deadline.getDate()}`}}</div>
-        <div class='header-cell label-on-track'>{{label.onTrack}}</div>
-      </div>
-    </div>
+        <tr>
+          <th colspan=8></th>
+          <th
+            v-for='dateString in dateStrings'
+          >
+            {{ dateString.split(' ')[2] }}
+          </th>
+        </tr>
+
+        <tr>
+          <th>Label</th>
+          <th colspan=6>Deadline</th>
+          <th>On Track</th>
+          <th
+            v-for='dateString in dateStrings'
+          >
+            {{ dateString.split(' ')[0][0] + dateString.split(' ')[0][1]}}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for='label in labels'
+        >
+          <td>{{label.name}}</td>
+          <td colspan=6>{{`${label.deadline.getMonth()}/${label.deadline.getDate()}`}}</td>
+          <td>{{label.onTrack}}</td>
+        </tr>
+      </tbody>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>M</th>
+          <th>T</th>
+          <th>W</th>
+          <th>T</th>
+          <th>F</th>
+          <th>Apply</th>
+          <th>Labels</th>
+        </tr>
+      </thead>
+      <tbody>
+        <AvailabilityRow v-for='person in people' :person='person'/>
+      </tbody>
+    </table>
 
 
 
@@ -55,12 +88,13 @@
 </template>
 
 <script>
+  import AvailabilityRow from '../components/availability_row';
   import TodoRow from '../components/todo_row';
   import Graph from '../components/graph';
   import { mapState } from 'vuex';
 
   export default {
-    components: { Graph, TodoRow },
+    components: { AvailabilityRow, Graph, TodoRow },
     created: function created() {
       const node1Id = this.$store.getters.uuidv4();
       const node2Id = this.$store.getters.uuidv4();
@@ -71,6 +105,7 @@
       const peopleId2 = this.$store.getters.uuidv4();
 
       this.$store.commit('initialState', {
+        numberOfDaysToPotentiallyShow: 50,
         todos: [
           {
             x: 400,
@@ -133,47 +168,55 @@
           {
             id: peopleId1,
             name: 'Edderic',
-            availability_template: {
-              mon: 5,
-              tue: 2,
-              wed: 3,
-              thu: 3,
-              fri: 5,
+            labels: [
+              {
+                id: reportingId1,
+                name: 'Reporting'
+              }
+            ],
+            availabilityTemplate: {
+              'Mon': 5,
+              'Tue': 2,
+              'Wed': 3,
+              'Thu': 3,
+              'Fri': 5,
             },
-            actual_availability_schedule: {
-              "2020-10-01": 7
+            derivedAvailability: {
+              "Fri Oct 02 2020": 7
             }
           },
           {
             id: peopleId2,
             name: 'Frederic',
-            availability_template: {
-              mon: 1,
-              tue: 8,
-              wed: 8,
-              thu: 3,
-              fri: 4,
+            availabilityTemplate: {
+              'Mon': 1,
+              'Tue': 8,
+              'Wed': 8,
+              'Thu': 3,
+              'Fri': 4,
             },
-            actual_availability_schedule: {
-              "2020-10-01": 7
+            labels: [
+            ],
+            derivedAvailability: {
+              "Fri Oct 02 2020": 4
             }
           }
         ]
       });
     },
     computed: {
-      ...mapState(['todos', 'arrows', 'tabIndex', 'labels', 'people']),
+      ...mapState(['todos', 'arrows', 'tabIndex', 'labels', 'people', 'numberOfDaysToPotentiallyShow']),
       dateStrings() {
-        let date = new Date()
-        let list = []
+        let date = new Date();
+        let list = [];
 
-        for (let i=0; i<50; i++) {
+        for (let i=0; i<this.numberOfDaysToPotentiallyShow; i++) {
           date.setDate(date.getDate() + 1);
 
-          let dateString = date.toDateString();
+          let _dateString = date.toDateString();
 
-          if (dateString.split(' ')[0] != 'Sat' && dateString.split(' ')[0] != 'Sun') {
-            list.push(dateString);
+          if (_dateString.split(' ')[0] != 'Sat' && _dateString.split(' ')[0] != 'Sun') {
+            list.push(_dateString);
           }
         }
 
@@ -191,24 +234,12 @@
 </script>
 
 <style scoped>
+  td, th {
+    padding: 8px;
+  }
   .labels {
     display: flex;
     flex-direction: column;
-  }
-  .label {
-    display: flex;
-  }
-  .header-2-label {
-    display: flex;
-  }
-  .label-name {
-    width: 4em;
-  }
-  .label-deadline {
-    width: 4em;
-  }
-  .label-on-track {
-    width: 4em;
   }
 
   #details {
@@ -218,6 +249,12 @@
   p {
     font-size: 2em;
     text-align: center;
+  }
+
+  .day-cell {
+    padding: 10px;
+    width: 20px;
+    border-bottom: 1px solid black;
   }
 
   .header-cell {
