@@ -53,7 +53,10 @@
         </tr>
       </thead>
       <tbody>
-        <AvailabilityRow v-for='person in people' :person='person'/>
+        <AvailabilityRow
+          v-for='person in people' :person='person'
+          :availabilityPadding='8'
+        />
       </tbody>
     </table>
 
