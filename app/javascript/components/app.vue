@@ -211,13 +211,14 @@
         let list = [];
 
         for (let i=0; i<this.numberOfDaysToPotentiallyShow; i++) {
-          date.setDate(date.getDate() + 1);
 
           let _dateString = date.toDateString();
 
           if (_dateString.split(' ')[0] != 'Sat' && _dateString.split(' ')[0] != 'Sun') {
             list.push(_dateString);
           }
+
+          date.setDate(date.getDate() + 1);
         }
 
         return list;

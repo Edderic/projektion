@@ -65,14 +65,18 @@ export function createStore() {
           let date = new Date();
 
           for (let i=0; i<state.numberOfDaysToPotentiallyShow; i++) {
-            date.setDate(date.getDate() + 1);
             let dateString = date.toDateString();
             let day = dateString.split(' ')[0];
 
             if (day != 'Sun' && day != 'Sat' && !person.derivedAvailability[dateString]) {
 
+              // this is buggy. We'll be saving a bunch of availabilities over
+              // time, and this list will grow We only want to show the X
+              // number of availabilities starting today.
               person.derivedAvailability[dateString] = availabilityTemplate[day];
             }
+
+            date.setDate(date.getDate() + 1);
           }
         }
       },
