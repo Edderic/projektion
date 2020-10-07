@@ -8,7 +8,7 @@
       ref="dag"
       id="dag_view"
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 100% 100%"
+      viewBox="0 0 800 800"
       v-on:click='onClick'
       @mousemove='move'
       @mouseup='drop'

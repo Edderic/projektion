@@ -108,7 +108,7 @@
       const peopleId2 = this.$store.getters.uuidv4();
 
       this.$store.commit('initialState', {
-        numberOfDaysToPotentiallyShow: 50,
+        numDaysToShow: 50,
         todos: [
           {
             x: 400,
@@ -208,24 +208,7 @@
       });
     },
     computed: {
-      ...mapState(['todos', 'arrows', 'tabIndex', 'labels', 'people', 'numberOfDaysToPotentiallyShow']),
-      dateStrings() {
-        let date = new Date();
-        let list = [];
-
-        for (let i=0; i<this.numberOfDaysToPotentiallyShow; i++) {
-
-          let _dateString = date.toDateString();
-
-          if (_dateString.split(' ')[0] != 'Sat' && _dateString.split(' ')[0] != 'Sun') {
-            list.push(_dateString);
-          }
-
-          date.setDate(date.getDate() + 1);
-        }
-
-        return list;
-      }
+      ...mapState(['todos', 'arrows', 'tabIndex', 'labels', 'people', 'numberOfDaysToPotentiallyShow', 'dateStrings']),
     },
     methods: {
     },

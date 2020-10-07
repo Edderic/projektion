@@ -1,6 +1,7 @@
 /*jshint esversion: 6 */
 import Vue from 'vue';
 import Vuex from 'vuex';
+import helpers from './helpers';
 
 Vue.use(Vuex);
 
@@ -32,6 +33,23 @@ export function createStore() {
       getTodoById: (state) => (id) => {
         return state.todos.find(todo => todo.id === id);
       },
+      getDateStrings: (state) => () => {
+        let date = new Date();
+        let list = [];
+
+        for (let i=0; i<state.numDaysToShow; i++) {
+
+          let _dateString = date.toDateString();
+
+          if (_dateString.split(' ')[0] != 'Sat' && _dateString.split(' ')[0] != 'Sun') {
+            list.push(_dateString);
+          }
+
+          date.setDate(date.getDate() + 1);
+        }
+
+        return list;
+      },
       getArrowByNodeIds: (state) => (parentNodeId, childNodeId) => {
         return state.arrows.find(
           arrow => arrow.parentNode.id === parentNodeId && arrow.childNode.id === childNodeId
@@ -57,13 +75,14 @@ export function createStore() {
           todos,
           labels,
           people,
-          numberOfDaysToPotentiallyShow
+          numDaysToShow
         }
       ) {
         state.todos = todos;
         state.labels = labels;
         state.people = people;
-        state.numberOfDaysToPotentiallyShow = numberOfDaysToPotentiallyShow;
+        state.numDaysToShow = numDaysToShow;
+        state.dateStrings = this.getters.getDateStrings();
 
         this.commit('initializeArrows');
         this.commit('initializeAvailability');
@@ -71,159 +90,79 @@ export function createStore() {
       },
 
       simulate(state) {
-        function getDay(date) {
-          return date.toDateString().split(' ')[0];
-        }
-
-        function updateDateByOneDaySim(date) {
-          date.setDate(date.getDate() + 1);
-        }
-
-        function skipWeekend(date) {
-          while(getDay(date) == 'Sun' || getDay(date) == 'Sat') {
-            updateDateByOneDaySim(date);
-          }
-        }
-
-        function numHoursAvailForPersonSim(person, date) {
-          return person.simAvailability[date.toDateString()];
-        }
-
-        function isInProgressTodoSim(todo) {
-          return todo.simStatus == 'In progress';
-        }
-
-        function isNotStartedTodoSim(todo) {
-          return todo.simStatus == 'Not started';
-        }
-
-        function isDoneTodoSim(todo) {
-          return todo.simStatus == 'Done';
-        }
-
-        function inProgressTodosSim(todos) {
-          return todos.filter((todo) => {
-            return isInProgressTodoSim(todo);
-          });
-        }
-
-        function notStartedTodosSim(todos) {
-          return todos.filter((todo) => {
-            return isNotStartedTodoSim(todo);
-          });
-        }
-
-        function doneTodosSim(todos) {
-          return todos.filter((todo) => {
-            return isDoneTodoSim(todo);
-          });
-        }
-
-        function finishTodoSim(todo, date, i) {
-          if (todo.simStatus == 'In progress' && todo.simDoneAt[i] == date.toDateString()) {
-            todo.simStatus = 'Done';
-          }
-        }
-
-        function consumeAvailability(date, person, numDaysEstimate) {
-          let dateCopy = new Date(date.toDateString());
-          let numHoursEstimate = numDaysEstimate * 8; // 8 hours per day
-          let availForDay = person.simAvailability[dateCopy.toDateString()];
-
-          while (numHoursEstimate > availForDay) {
-            person.simAvailability[dateCopy.toDateString()] = 0;
-            updateDateByOneDaySim(dateCopy);
-            skipWeekend(dateCopy);
-            numHoursEstimate -= availForDay;
-            availForDay = person.simAvailability[dateCopy.toDateString()];
-          }
-
-          person.simAvailability[dateCopy.toDateString()] -= numHoursEstimate;
-
-          return dateCopy;
-        }
-
-        function sampleFromArray(array) {
-          return array[Math.floor(Math.random() * array.length)];
-        }
-
-        function startWorkOnTodo(todo, date, person) {
-          let numDaysEstimate = sampleFromArray(todo.simEstimates);
-
-          let finishDate = consumeAvailability(date, person, numDaysEstimate);
-          todo.simDoneAt.push(finishDate.toDateString());
-          todo.simStatus = 'In progress';
-        }
-
-        function todosAllDoneSim(todos) {
-          return doneTodosSim(todos).length == todos.length;
-        }
-
-        function startableTodoByPersonSim(person, todo, todoParents, date) {
-          return (
-            isNotStartedTodoSim(todo) &&
-            todosAllDoneSim(todoParents) &&
-            numHoursAvailForPersonSim(person, date) > 0
-          );
-        }
-
-        function findParents(todo, arrows) {
-          let parents = [];
-
-          for (let arrow of arrows) {
-            if (arrow.childNode == todo) {
-              parents.push(arrow.parentNode);
-            }
-          }
-
-          return parents;
-        }
-
         let people = state.people;
 
-        let numSims = 5;
+        state.labelCompletion = helpers.setupSimCounts(
+          state.numDaysToShow,
+          state.labels.map((label) => label.id)
+        );
+
+        let numSims = 100;
 
         for (let i = 0; i < numSims; i++) {
           this.commit('prepareTodosForSim', {i});
           this.commit('copyAvailabilityForSim');
 
           let date = new Date();
-          skipWeekend(date);
+          helpers.skipWeekend(date);
 
-          // prepare what's currently in progress'
-          for (let finishableTodo of inProgressTodosSim(state.todos)) {
-            let person = sampleFromArray(state.people);
-            startWorkOnTodo(finishableTodo, date, person);
+          // prepare what's done
+          for (let doneTodo of helpers.doneTodosSim(state.todos)) {
+            let person = helpers.sampleFromArray(state.people);
+            helpers.startWorkOnTodo(doneTodo, date, person);
           }
 
-          while(!todosAllDoneSim(state.todos)) {
-            for (let finishableTodo of inProgressTodosSim(state.todos)) {
+          // prepare what's currently in progress'
+          for (let finishableTodo of helpers.inProgressTodosSim(state.todos)) {
+            let person = helpers.sampleFromArray(state.people);
+            helpers.startWorkOnTodo(finishableTodo, date, person);
+          }
+
+          while(!helpers.todosAllDoneSim(state.todos)) {
+            for (let finishableTodo of helpers.inProgressTodosSim(state.todos)) {
               // TODO: when a todo is assigned to somoene, only they should be able to start it
               //
-              finishTodoSim(finishableTodo, date, i);
+              helpers.finishTodoSim(finishableTodo, date, i);
             }
 
             for (let person of people) {
               // state.todos can be modified with visitables
-              for (let notStartedTodo of notStartedTodosSim(state.todos)) {
-                let todoParents = findParents(notStartedTodo, state.arrows);
+              for (let notStartedTodo of helpers.notStartedTodosSim(state.todos)) {
+                let todoParents = helpers.findParents(notStartedTodo, state.arrows);
 
-                if (startableTodoByPersonSim(person, notStartedTodo, todoParents, date)) {
-                  startWorkOnTodo(notStartedTodo, date, person);
+                if (helpers.startableTodoByPersonSim(person, notStartedTodo, todoParents, date)) {
+                  helpers.startWorkOnTodo(notStartedTodo, date, person);
                 }
               }
             }
 
-            for (let finishableTodo of inProgressTodosSim(state.todos)) {
+            for (let finishableTodo of helpers.inProgressTodosSim(state.todos)) {
               // TODO: when a todo is assigned to somoene, only they should be able to start it
               //
-              finishTodoSim(finishableTodo, date, i);
+              helpers.finishTodoSim(finishableTodo, date, i);
             }
 
-            updateDateByOneDaySim(date);
-            skipWeekend(date);
+            helpers.updateDateByOneDaySim(date);
+            helpers.skipWeekend(date);
           }
+
+          let maxDate = helpers.getRoughDate();
+          let newDate;
+
+          for (let todo of state.todos) {
+            let newDate = new Date(todo.simDoneAt[i]);
+            // TODO: might want to filter by labelId
+
+            if (newDate > maxDate) {
+              maxDate = newDate;
+            }
+          }
+
+          state.labelCompletion[state.labels[0].id][maxDate.toDateString()] += 1;
         }
+
+        console.log(state.labelCompletion)
+
       },
 
       initializeAvailability(state) {
@@ -232,19 +171,11 @@ export function createStore() {
 
           let date = new Date();
 
-          for (let i=0; i<state.numberOfDaysToPotentiallyShow; i++) {
-            let dateString = date.toDateString();
-            let day = dateString.split(' ')[0];
-
-            if (day != 'Sun' && day != 'Sat' && !person.derivedAvailability[dateString]) {
-
-              // this is buggy. We'll be saving a bunch of availabilities over
-              // time, and this list will grow We only want to show the X
-              // number of availabilities starting today.
-              person.derivedAvailability[dateString] = availabilityTemplate[day];
-            }
-
-            date.setDate(date.getDate() + 1);
+          for (let i=0; i<state.numDaysToShow; i++) {
+            helpers.skipWeekend(date);
+            let day = helpers.getDay(date);
+            person.derivedAvailability[date.toDateString()] = availabilityTemplate[day];
+            helpers.updateDateByOneDaySim(date);
           }
         }
       },
