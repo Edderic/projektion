@@ -38,14 +38,11 @@ export function createStore() {
         let list = [];
 
         for (let i=0; i<state.numDaysToShow; i++) {
+          helpers.skipWeekend(date);
 
-          let _dateString = date.toDateString();
+          list.push(date.toDateString());
 
-          if (_dateString.split(' ')[0] != 'Sat' && _dateString.split(' ')[0] != 'Sun') {
-            list.push(_dateString);
-          }
-
-          date.setDate(date.getDate() + 1);
+          helpers.updateDateByOneDaySim(date);
         }
 
         return list;
