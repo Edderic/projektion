@@ -103,12 +103,14 @@ var helpers = {
     }
   },
 
-  convertDateEstimatesToOrderedArray(dateEstimates, numDaysToShow) {
+  cumulativeDistribution(dateEstimates, numDaysToShow) {
     let list = [];
     let date = new Date();
+    let cumSum = 0;
 
     for (let i=0; i<numDaysToShow; i++) {
-      list.push(dateEstimates[date.toDateString()]);
+      cumSum += dateEstimates[date.toDateString()];
+      list.push(cumSum);
       this.updateDateByOneDaySim(date);
       this.skipWeekend(date);
     }

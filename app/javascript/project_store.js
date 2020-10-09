@@ -172,7 +172,7 @@ export function createStore() {
           state.labels[0].completionDistribution[maxDate.toDateString()] += 1;
         }
 
-        state.labels[0].listCompletion = helpers.convertDateEstimatesToOrderedArray(
+        state.labels[0].listCompletion = helpers.cumulativeDistribution(
           state.labels[0].completionDistribution,
           state.numDaysToShow
         );
