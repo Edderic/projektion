@@ -73,6 +73,7 @@ export function createStore() {
         state,
         {
           todos,
+          arrows,
           labels,
           people,
           numDaysToShow
@@ -92,14 +93,15 @@ export function createStore() {
       simulate(state) {
         let people = state.people;
 
-        state.labelCompletion = helpers.setupSimCounts(
-          state.numDaysToShow,
-          state.labels.map((label) => label.id)
-        );
+        for (let label of state.labels) {
+          label.completionDistribution = helpers.setupSimCounts(
+            state.numDaysToShow
+          );
+        }
 
-        let numSims = 100;
+        state.numSims = 100;
 
-        for (let i = 0; i < numSims; i++) {
+        for (let i = 0; i < state.numSims; i++) {
           this.commit('prepareTodosForSim', {i});
           this.commit('copyAvailabilityForSim');
 
@@ -109,19 +111,27 @@ export function createStore() {
           // prepare what's done
           for (let doneTodo of helpers.doneTodosSim(state.todos)) {
             let person = helpers.sampleFromArray(state.people);
-            helpers.startWorkOnTodo(doneTodo, date, person);
+            doneTodo.simDoneAt.push(date.toDateString());
           }
 
           // prepare what's currently in progress'
-          for (let finishableTodo of helpers.inProgressTodosSim(state.todos)) {
+          for (let inProgressTodo of helpers.inProgressTodosSim(state.todos)) {
             let person = helpers.sampleFromArray(state.people);
-            helpers.startWorkOnTodo(finishableTodo, date, person);
+            helpers.startWorkOnTodo(inProgressTodo, date, person);
           }
 
+          let count = 0;
           while(!helpers.todosAllDoneSim(state.todos)) {
+            if (count == 10000) {
+              console.warn('Uh-oh. Reached an infinite loop. Breaking out of infinite loop');
+              break;
+            }
+
+            count++;
+
             for (let finishableTodo of helpers.inProgressTodosSim(state.todos)) {
-              // TODO: when a todo is assigned to somoene, only they should be able to start it
-              //
+              // TODO: when a todo is assigned to someone, only they should be
+              // able to start it
               helpers.finishTodoSim(finishableTodo, date, i);
             }
 
@@ -137,8 +147,8 @@ export function createStore() {
             }
 
             for (let finishableTodo of helpers.inProgressTodosSim(state.todos)) {
-              // TODO: when a todo is assigned to somoene, only they should be able to start it
-              //
+              // TODO: when a todo is assigned to someone, only they should be
+              // able to start it
               helpers.finishTodoSim(finishableTodo, date, i);
             }
 
@@ -158,11 +168,14 @@ export function createStore() {
             }
           }
 
-          state.labelCompletion[state.labels[0].id][maxDate.toDateString()] += 1;
+          // TODO: make decisions about which label should be updated
+          state.labels[0].completionDistribution[maxDate.toDateString()] += 1;
         }
 
-        console.log(state.labelCompletion)
-
+        state.labels[0].listCompletion = helpers.convertDateEstimatesToOrderedArray(
+          state.labels[0].completionDistribution,
+          state.numDaysToShow
+        );
       },
 
       initializeAvailability(state) {
@@ -174,7 +187,10 @@ export function createStore() {
           for (let i=0; i<state.numDaysToShow; i++) {
             helpers.skipWeekend(date);
             let day = helpers.getDay(date);
-            person.derivedAvailability[date.toDateString()] = availabilityTemplate[day];
+            person.derivedAvailability[date.toDateString()] =
+              person.derivedAvailability[date.toDateString()] ||
+              availabilityTemplate[day];
+
             helpers.updateDateByOneDaySim(date);
           }
         }
@@ -185,11 +201,10 @@ export function createStore() {
           for (let parentId of todo.parentIds) {
             let parent = this.getters.getTodoById(parentId);
 
-            this.commit(
-              'addArrow',
+            state.arrows.push(
               {
                 parentNode: parent,
-                childNode: todo,
+                childNode: todo
               }
             );
           }
@@ -209,6 +224,8 @@ export function createStore() {
             childNode
           }
         );
+
+        childNode.parentIds.push(parentNode.id);
       },
 
       deleteTodo(state) {
@@ -277,6 +294,12 @@ export function createStore() {
         );
 
         state.arrows.splice(arrowIndex, 1);
+
+        const parentIdIndex = childNode.parentIds.findIndex(
+          (parentId) => parentId == parentNode.id
+        );
+
+        childNode.parentIds.splice(parentIdIndex, 1);
       },
 
       setAllNodesInactiveExcept(state, { exceptId }) {

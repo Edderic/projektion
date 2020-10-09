@@ -26,6 +26,43 @@ var helpers = {
     }
   },
 
+  debug(state, i) {
+    return ;
+
+    for(let person of people) {
+      console.log(
+        {
+          name: person.name,
+          derivedAvailability: person.derivedAvailability,
+          simAvailability: person.simAvailability
+        }
+      );
+    }
+    for(let todo of todos) {
+      let parents = this.findParents(todo, arrows);
+      let parentsCollection = [];
+
+      for (let parent of parents) {
+        parentsCollection.push({
+          tile: parent.title,
+          status: parent.simStatus,
+          doneAt: parent.simDoneAt[i]
+        });
+      }
+
+      console.log(
+        {
+          title: todo.title,
+          status: todo.simStatus,
+          doneAt: todo.simDoneAt[i],
+          parents: parentsCollection
+        }
+      );
+    }
+
+    debugger;
+  },
+
 
   todosAllDoneSim(todos) {
     return this.doneTodosSim(todos).length == todos.length;
@@ -66,20 +103,27 @@ var helpers = {
     }
   },
 
+  convertDateEstimatesToOrderedArray(dateEstimates, numDaysToShow) {
+    let list = [];
+    let date = new Date();
+
+    for (let i=0; i<numDaysToShow; i++) {
+      list.push(dateEstimates[date.toDateString()]);
+      this.updateDateByOneDaySim(date);
+      this.skipWeekend(date);
+    }
+
+    return list;
+  },
+
   setupSimCounts(numDaysToShow, labelIds) {
     let date = new Date();
     let dict = {};
 
-    for (let labelId of labelIds) {
-      dict[labelId] = {};
-    }
-
     for (let i=0; i<numDaysToShow; i++) {
       this.skipWeekend(date);
 
-      for (let labelId of labelIds) {
-        dict[labelId][date.toDateString()] = 0;
-      }
+      dict[date.toDateString()] = 0;
 
       this.updateDateByOneDaySim(date);
     }
