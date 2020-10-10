@@ -103,16 +103,30 @@ var helpers = {
     }
   },
 
+  cumulativeDistributionValueForDate(dateEstimates, dateString, numSims) {
+    let tmpDate = new Date((new Date()).toDateString());
+    let date = new Date(dateString);
+    let cumSum = 0;
+
+    while (tmpDate <= date) {
+      this.skipWeekend(tmpDate);
+      cumSum += dateEstimates[tmpDate.toDateString()];
+      this.updateDateByOneDaySim(tmpDate);
+    }
+
+    return cumSum / numSims;
+  },
+
   cumulativeDistribution(dateEstimates, numDaysToShow) {
     let list = [];
     let date = new Date();
     let cumSum = 0;
 
     for (let i=0; i<numDaysToShow; i++) {
+      this.skipWeekend(date);
       cumSum += dateEstimates[date.toDateString()];
       list.push(cumSum);
       this.updateDateByOneDaySim(date);
-      this.skipWeekend(date);
     }
 
     return list;

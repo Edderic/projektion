@@ -36,7 +36,11 @@
           v-for='label in labels'
         >
           <td>{{label.name}}</td>
-          <td colspan=6>{{`${label.deadline.getMonth()}/${label.deadline.getDate()}`}}</td>
+          <td colspan=6>
+            <select value='label.deadline.toDateString()' @change='setDeadlineForLabel($event, label)'>
+              <option v-for='dateString in dateStrings'>{{dateString}}</option>
+            </select>
+          </td>
           <td>{{label.onTrack}}</td>
           <td
             v-for='count in label.listCompletion'
@@ -2922,7 +2926,7 @@
             name: 'Reporting',
             id: reportingId1,
             deadline: new Date('2020-10-21'),
-            onTrack: "20%",
+            onTrack: 0.99,
             peopleIds: [
               peopleId1
             ]
@@ -2931,7 +2935,7 @@
             name: 'Question Bank',
             id: reportingId2,
             deadline: new Date('2020-11-10'),
-            onTrack: "30%",
+            onTrack: 0.99,
             peopleIds: [
               peopleId2
             ]
@@ -2990,6 +2994,14 @@
       ])
     },
     methods: {
+      setDeadlineForLabel(e, label) {
+        this.$store.commit('setLabel', {
+          id: label.id,
+          dict: {
+            deadline: e.target.value
+          }
+        })
+      }
     },
     data: function () {
       return {

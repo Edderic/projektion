@@ -53,7 +53,6 @@
     },
     methods: {
       startDrag({offsetX, offsetY}) {
-        console.log('startDrag')
         this.$store.commit(
           'startDrag',
           {

@@ -8,7 +8,9 @@ Vue.use(Vuex);
 export function createStore() {
   return new Vuex.Store({
     state: {
+      numSims: 100,
       todos: [],
+      people: [],
       tabIndex: -1,
       arrows: [],
       draggingNode: null,
@@ -32,6 +34,12 @@ export function createStore() {
       },
       getTodoById: (state) => (id) => {
         return state.todos.find(todo => todo.id === id);
+      },
+      getLabelById: (state) => (id) => {
+        return state.labels.find(label => label.id === id);
+      },
+      getPersonById: (state) => (id) => {
+        return state.people.find(person => person.id === id);
       },
       getDateStrings: (state) => () => {
         let date = new Date();
@@ -95,8 +103,6 @@ export function createStore() {
             state.numDaysToShow
           );
         }
-
-        state.numSims = 100;
 
         for (let i = 0; i < state.numSims; i++) {
           this.commit('prepareTodosForSim', {i});
@@ -173,6 +179,11 @@ export function createStore() {
           state.labels[0].completionDistribution,
           state.numDaysToShow
         );
+        state.labels[0].onTrack = helpers.cumulativeDistributionValueForDate(
+          state.labels[0].completionDistribution,
+          state.labels[0].deadline,
+          state.numSims
+        );
       },
 
       initializeAvailability(state) {
@@ -213,6 +224,8 @@ export function createStore() {
         this.commit('setAllNodesInactiveExcept', {
           exceptId: node.id
         });
+
+        this.commit('simulate');
       },
       addArrow(state, { parentNode, childNode }) {
         state.arrows.push(
@@ -223,6 +236,7 @@ export function createStore() {
         );
 
         childNode.parentIds.push(parentNode.id);
+        this.commit('simulate');
       },
 
       deleteTodo(state) {
@@ -246,6 +260,8 @@ export function createStore() {
 
           state.arrows = arrows;
         }
+
+        this.commit('simulate');
       },
       startDrag(state,
         {
@@ -297,6 +313,7 @@ export function createStore() {
         );
 
         childNode.parentIds.splice(parentIdIndex, 1);
+        this.commit('simulate');
       },
 
       setAllNodesInactiveExcept(state, { exceptId }) {
@@ -309,12 +326,42 @@ export function createStore() {
       setTabIndex(state, { index }) {
         state.tabIndex = index;
       },
+      setLabel(state, { id, dict }) {
+        let label = this.getters.getLabelById(id);
+
+        for (let key in dict) {
+          label[key] = dict[key];
+
+          if (key == 'deadline') {
+            label.onTrack =
+              helpers.cumulativeDistributionValueForDate(
+                label.completionDistribution,
+                dict[key],
+                state.numSims
+              );
+            console.log('label.completionDistribution', label.completionDistribution);
+            console.log('dict[key]', dict[key]);
+            console.log('label.onTrack', label.onTrack);
+          }
+        }
+      },
       setTodo(state, { id, dict }) {
         let node = this.getters.getTodoById(id);
 
         for (let key in dict) {
+          if (key == 'status') {
+            this.commit('simulate');
+          }
           node[key] = dict[key];
         }
+
+      },
+      setPersonDerivedAvailability(state, { id, dateString, value }) {
+        let person = this.getters.getPersonById(id);
+
+        Vue.set(person.derivedAvailability, dateString, parseInt(value));
+
+        this.commit('simulate');
       },
       toggleArrow(state, {id}) {
         const parentNode = this.getters.getActiveNode();
