@@ -32,22 +32,16 @@
         </tr>
       </thead>
       <tbody>
-        <tr
+        <LabelRow
           v-for='label in labels'
-        >
-          <td>{{label.name}}</td>
-          <td colspan=6>
-            <select value='label.deadline.toDateString()' @change='setDeadlineForLabel($event, label)'>
-              <option v-for='dateString in dateStrings'>{{dateString}}</option>
-            </select>
-          </td>
-          <td>{{label.onTrack}}</td>
-          <td
-            v-for='count in label.listCompletion'
-          >
-            {{ count / numSims }}
-          </td>
-        </tr>
+          :key='label.id'
+          :id='label.id'
+          :name='label.name'
+          :on-track='label.onTrack'
+          :list-completion='label.listCompletion'
+          :deadline='label.deadline'
+          :dateStrings='dateStrings'
+        />
       </tbody>
       <thead>
         <tr>
@@ -64,7 +58,9 @@
       <tbody>
         <AvailabilityRow
           v-for='person in people' :person='person'
+          :key='person.id'
           :availabilityPadding='8'
+          :derivedAvailability='person.derivedAvailability'
         />
       </tbody>
     </table>
@@ -103,10 +99,11 @@
   import AvailabilityRow from '../components/availability_row';
   import TodoRow from '../components/todo_row';
   import Graph from '../components/graph';
+  import LabelRow from '../components/label_row';
   import { mapState } from 'vuex';
 
   export default {
-    components: { AvailabilityRow, Graph, TodoRow },
+    components: { AvailabilityRow, Graph, TodoRow, LabelRow },
     created: function created() {
       const reportingId1 = this.$store.getters.uuidv4();
       const reportingId2 = this.$store.getters.uuidv4();
@@ -2925,20 +2922,22 @@
           {
             name: 'Reporting',
             id: reportingId1,
-            deadline: new Date('2020-10-21'),
+            deadline: new Date('2020-10-21').toDateString(),
             onTrack: 0.99,
             peopleIds: [
               peopleId1
-            ]
+            ],
+            listCompletion: []
           },
           {
             name: 'Question Bank',
             id: reportingId2,
-            deadline: new Date('2020-11-10'),
+            deadline: new Date('2020-11-21').toDateString(),
             onTrack: 0.99,
             peopleIds: [
               peopleId2
-            ]
+            ],
+            listCompletion: []
           }
         ],
         people: [
@@ -2990,18 +2989,9 @@
           'people',
           'numberOfDaysToPotentiallyShow',
           'dateStrings',
-          'numSims'
       ])
     },
     methods: {
-      setDeadlineForLabel(e, label) {
-        this.$store.commit('setLabel', {
-          id: label.id,
-          dict: {
-            deadline: e.target.value
-          }
-        })
-      }
     },
     data: function () {
       return {

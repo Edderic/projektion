@@ -9,7 +9,7 @@
       <span v-for='label in person.labels'>{{label.name}}</span>
     </td>
     <td
-      v-for='(availability, dateString) in person.derivedAvailability'
+      v-for='(availability, dateString) in derivedAvailability'
       :style="{ padding: availabilityPadding + 'px' }"
     >
       <select :value='availability' @change='setDerivedAvailability($event, dateString)'>
@@ -42,6 +42,7 @@
     },
     props: {
       'person': { },
+      'derivedAvailability': { },
       'availabilityPadding': {}
     }
 }

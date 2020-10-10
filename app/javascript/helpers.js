@@ -27,40 +27,45 @@ var helpers = {
   },
 
   debug(state, i) {
-    return ;
+    console.log(
+      'state.labels[0].listCompletion',
+      state.labels[0].listCompletion
+    )
+    // for(let label of state.labels) {
+    // }
 
-    for(let person of people) {
-      console.log(
-        {
-          name: person.name,
-          derivedAvailability: person.derivedAvailability,
-          simAvailability: person.simAvailability
-        }
-      );
-    }
-    for(let todo of todos) {
-      let parents = this.findParents(todo, arrows);
-      let parentsCollection = [];
+    // for(let person of state.people) {
+      // console.log(
+        // {
+          // name: person.name,
+          // derivedAvailability: person.derivedAvailability,
+          // simAvailability: person.simAvailability
+        // }
+      // );
+    // }
+    // for(let todo of state.todos) {
+      // let parents = this.findParents(todo, arrows);
+      // let parentsCollection = [];
+//
+      // for (let parent of parents) {
+        // parentsCollection.push({
+          // tile: parent.title,
+          // status: parent.simStatus,
+          // doneAt: parent.simDoneAt[i]
+        // });
+      // }
+//
+      // console.log(
+        // {
+          // title: todo.title,
+          // status: todo.simStatus,
+          // doneAt: todo.simDoneAt[i],
+          // parents: parentsCollection
+        // }
+      // );
+    // }
 
-      for (let parent of parents) {
-        parentsCollection.push({
-          tile: parent.title,
-          status: parent.simStatus,
-          doneAt: parent.simDoneAt[i]
-        });
-      }
-
-      console.log(
-        {
-          title: todo.title,
-          status: todo.simStatus,
-          doneAt: todo.simDoneAt[i],
-          parents: parentsCollection
-        }
-      );
-    }
-
-    debugger;
+    // debugger;
   },
 
 

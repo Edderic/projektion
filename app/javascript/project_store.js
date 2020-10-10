@@ -21,6 +21,9 @@ export function createStore() {
       updatingEstimate: false
     },
     getters: {
+      getNumSimulations: (state) => () => {
+        return state.numSims;
+      },
       getRootNodes: (state) => () => {
         let rootNodes = [];
 
@@ -93,6 +96,9 @@ export function createStore() {
         this.commit('initializeArrows');
         this.commit('initializeAvailability');
         this.commit('simulate');
+
+        helpers.debug(state);
+        console.log('simulate');
       },
 
       simulate(state) {
@@ -113,7 +119,6 @@ export function createStore() {
 
           // prepare what's done
           for (let doneTodo of helpers.doneTodosSim(state.todos)) {
-            let person = helpers.sampleFromArray(state.people);
             doneTodo.simDoneAt.push(date.toDateString());
           }
 
@@ -175,14 +180,23 @@ export function createStore() {
           state.labels[0].completionDistribution[maxDate.toDateString()] += 1;
         }
 
-        state.labels[0].listCompletion = helpers.cumulativeDistribution(
-          state.labels[0].completionDistribution,
-          state.numDaysToShow
+        Vue.set(
+          state.labels[0],
+          'listCompletion',
+          helpers.cumulativeDistribution(
+            state.labels[0].completionDistribution,
+            state.numDaysToShow
+          )
         );
-        state.labels[0].onTrack = helpers.cumulativeDistributionValueForDate(
-          state.labels[0].completionDistribution,
-          state.labels[0].deadline,
-          state.numSims
+
+        Vue.set(
+          state.labels[0],
+          'onTrack',
+          helpers.cumulativeDistributionValueForDate(
+            state.labels[0].completionDistribution,
+            state.labels[0].deadline,
+            state.numSims
+          )
         );
       },
 
@@ -226,6 +240,8 @@ export function createStore() {
         });
 
         this.commit('simulate');
+        helpers.debug(state);
+        console.log('addNode')
       },
       addArrow(state, { parentNode, childNode }) {
         state.arrows.push(
@@ -237,6 +253,8 @@ export function createStore() {
 
         childNode.parentIds.push(parentNode.id);
         this.commit('simulate');
+        helpers.debug(state);
+        console.log('addArrow')
       },
 
       deleteTodo(state) {
@@ -262,6 +280,8 @@ export function createStore() {
         }
 
         this.commit('simulate');
+        helpers.debug(state);
+        console.log('deleteTodo');
       },
       startDrag(state,
         {
@@ -314,6 +334,8 @@ export function createStore() {
 
         childNode.parentIds.splice(parentIdIndex, 1);
         this.commit('simulate');
+        helpers.debug(state);
+        console.log('removeArrow');
       },
 
       setAllNodesInactiveExcept(state, { exceptId }) {
@@ -332,16 +354,17 @@ export function createStore() {
         for (let key in dict) {
           label[key] = dict[key];
 
+
           if (key == 'deadline') {
-            label.onTrack =
+            Vue.set(
+              label,
+              'onTrack',
               helpers.cumulativeDistributionValueForDate(
                 label.completionDistribution,
                 dict[key],
                 state.numSims
-              );
-            console.log('label.completionDistribution', label.completionDistribution);
-            console.log('dict[key]', dict[key]);
-            console.log('label.onTrack', label.onTrack);
+              )
+            );
           }
         }
       },
@@ -351,17 +374,24 @@ export function createStore() {
         for (let key in dict) {
           if (key == 'status') {
             this.commit('simulate');
+            helpers.debug(state);
+            console.log('setTodo');
           }
           node[key] = dict[key];
         }
 
       },
       setPersonDerivedAvailability(state, { id, dateString, value }) {
+        // TODO: for some reason the estimates for the whole project are not
+        // updating
+        //
         let person = this.getters.getPersonById(id);
 
         Vue.set(person.derivedAvailability, dateString, parseInt(value));
 
         this.commit('simulate');
+        helpers.debug(state);
+        console.log('setPersonDerivedAvailability');
       },
       toggleArrow(state, {id}) {
         const parentNode = this.getters.getActiveNode();
@@ -432,12 +462,19 @@ export function createStore() {
         state.updatingEstimate = true;
       },
       finishUpdateEstimate(state) {
-        state.updatingEstimate = false;
+        if (state.updatingEstimate) {
+          this.commit('simulate');
+          helpers.debug(state);
+          state.updatingEstimate = false;
+          console.log('finishUpdateEstimate');
+        }
       },
       updateTodoEstimate(state, {id, estimateIndex, value}) {
         let todo = this.getters.getTodoById(id);
 
         Vue.set(todo.estimates, estimateIndex, value);
+        helpers.debug(state);
+        console.log('updateTodoEstimate');
       },
 
       prepareTodosForSim(state, {i}) {
