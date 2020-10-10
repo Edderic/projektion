@@ -1,5 +1,5 @@
 <template>
-  <div id='app'>
+  <div id='project'>
     <table>
       <thead>
         <tr>
