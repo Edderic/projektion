@@ -49,7 +49,7 @@ var helpers = {
         let green = prevColor.g + (currColor.g - prevColor.g) * distanceToPrevColor * colorLenMin1;
         let blue = prevColor.b + (currColor.b - prevColor.b) * distanceToPrevColor * colorLenMin1;
 
-        return `rgb(${red}, ${green}, ${blue})`;
+        return `rgb(${parseInt(red)}, ${parseInt(green)}, ${parseInt(blue)})`;
       }
     }
   },
@@ -159,6 +159,26 @@ var helpers = {
       this.skipWeekend(date);
       cumSum += dateEstimates[date.toDateString()];
       list.push(cumSum);
+      this.updateDateByOneDaySim(date);
+    }
+
+    return list;
+  },
+
+  loopThroughDates(numDaysToShow, dictDates) {
+    let list = [];
+    let date = new Date();
+
+    for (let i=0; i<numDaysToShow; i++) {
+      this.skipWeekend(date);
+
+      let dateString = date.toDateString();
+
+      list.push({
+        dateString,
+        value: dictDates[dateString]
+      });
+
       this.updateDateByOneDaySim(date);
     }
 

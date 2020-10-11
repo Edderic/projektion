@@ -57,7 +57,8 @@
       </thead>
       <tbody>
         <AvailabilityRow
-          v-for='person in people' :person='person'
+          v-for='person in people'
+          :person='person'
           :key='person.id'
           :availabilityPadding='8'
           :derivedAvailability='person.derivedAvailability'

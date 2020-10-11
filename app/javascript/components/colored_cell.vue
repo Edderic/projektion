@@ -2,7 +2,9 @@
   <td
     :style="{ backgroundColor: cellColor }"
   >
-    {{ value / maxVal }}
+    <slot>
+      {{ value / maxVal }}
+    </slot>
   </td>
 </template>
 

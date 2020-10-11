@@ -9,6 +9,7 @@ export function createStore() {
   return new Vuex.Store({
     state: {
       numSims: 100,
+      numDaysToShow: null,
       todos: [],
       colorInterpolationScheme: null,
       labels: [],
@@ -23,6 +24,9 @@ export function createStore() {
       updatingEstimate: false
     },
     getters: {
+      getNumDaysToShow: (state) => () => {
+        return state.numDaysToShow;
+      },
       getColorInterpolationScheme: (state) => () => {
         return state.colorInterpolationScheme;
       },
