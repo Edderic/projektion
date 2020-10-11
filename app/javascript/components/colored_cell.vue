@@ -16,19 +16,61 @@
         return this.value / this.maxVal;
       },
       cellColor() {
-        const green = {
-          'red': 54,
-          'green': 255,
-          'blue': 101
+        let colors = [
+          { name: 'darkRed',
+            r: 174,
+            g: 17,
+            b: 0
+          },
+          {
+            name: 'red',
+            r: 219,
+            g: 21,
+            b: 0
+          },
+
+          {
+            name: 'orangeRed',
+            r: 240,
+            g: 90,
+            b: 0
+          },
+          {
+            name: 'yellowOrange',
+            r: 254,
+            g: 160,
+            b: 8
+          },
+          {
+            name: 'yellow',
+            r: 255,
+            g: 233,
+            b: 56
+          },
+          {
+            name: 'green',
+            r: 87,
+            g: 195,
+            b: 40
+          },
+        ];
+
+        for(let i=1; i<= colors.length; i++) {
+          if (this.ratio < i/colors.length && this.ratio >= (i-1) / colors.length) {
+            let distanceToPrevColor = this.ratio - (i-1) / colors.length;
+            let prevColor = colors[i-1];
+            let currColor = colors[i];
+
+            let red = prevColor.r + (currColor.r - prevColor.r) * distanceToPrevColor * colors.length;
+            let green = prevColor.g + (currColor.g - prevColor.g) * distanceToPrevColor * colors.length;
+            let blue = prevColor.b + (currColor.b - prevColor.b) * distanceToPrevColor * colors.length;
+
+            return `rgb(${red}, ${green}, ${blue})`;
+          } else if (this.ratio == 1) {
+            let lastColor = colors[colors.length-1] ;
+            return `rgb(${lastColor.r}, ${lastColor.g}, ${lastColor.b})`;
+          }
         }
-
-        // if ratio is 1 then 54
-        // if ratio is 0 then 255
-        let red = 255 - 201 * this.ratio;
-        let blue = 255 - 154 * this.ratio;
-
-        let color = `rgb(${red}, 255, ${blue})`
-        return color;
       },
     },
     methods: {
