@@ -112,6 +112,44 @@
 
       this.$store.commit('initialState', {
         numDaysToShow: 50,
+        colorInterpolationScheme: [
+          { name: 'darkRed',
+            r: 174,
+            g: 17,
+            b: 0
+          },
+          {
+            name: 'red',
+            r: 219,
+            g: 21,
+            b: 0
+          },
+
+          {
+            name: 'orangeRed',
+            r: 240,
+            g: 90,
+            b: 0
+          },
+          {
+            name: 'yellowOrange',
+            r: 254,
+            g: 160,
+            b: 8
+          },
+          {
+            name: 'yellow',
+            r: 255,
+            g: 233,
+            b: 56
+          },
+          {
+            name: 'green',
+            r: 87,
+            g: 195,
+            b: 40
+          },
+        ],
         todos:
 [{"x":204,
 "y":89,

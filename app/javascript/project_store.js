@@ -10,6 +10,8 @@ export function createStore() {
     state: {
       numSims: 100,
       todos: [],
+      colorInterpolationScheme: null,
+      labels: [],
       people: [],
       tabIndex: -1,
       arrows: [],
@@ -21,6 +23,9 @@ export function createStore() {
       updatingEstimate: false
     },
     getters: {
+      getColorInterpolationScheme: (state) => () => {
+        return state.colorInterpolationScheme;
+      },
       getNumSimulations: (state) => () => {
         return state.numSims;
       },
@@ -80,6 +85,7 @@ export function createStore() {
       initialState(
         state,
         {
+          colorInterpolationScheme,
           todos,
           arrows,
           labels,
@@ -87,6 +93,7 @@ export function createStore() {
           numDaysToShow
         }
       ) {
+        state.colorInterpolationScheme = colorInterpolationScheme;
         state.todos = todos;
         state.labels = labels;
         state.people = people;
