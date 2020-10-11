@@ -13,10 +13,9 @@
       :value='availability.value'
       class='cell'
       v-for='availability in orderedAvailability'
-      :key='person.id + "-" + availability.dateString + "-" + availability'
+      :key='person.id + "-" + availability.dateString + "-" + availability.value'
       :style="{ padding: availabilityPadding + 'px' }"
     >
-      {{ availability.value }}
       <select :value='availability.value' @change='setDerivedAvailability($event, availability.dateString)'>
         <option>0</option>
         <option>1</option>
@@ -44,7 +43,7 @@
           this.$store.getters.getNumDaysToShow(),
           this.derivedAvailability
         )
-      }
+      },
     },
     methods: {
       setDerivedAvailability(e, dateString) {
@@ -53,8 +52,6 @@
           id: this.person.id,
           value: e.target.value
         });
-
-        // this.$vm.forceUpdate();
       }
     },
     props: {

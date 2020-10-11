@@ -220,9 +220,20 @@ export function createStore() {
           for (let i=0; i<state.numDaysToShow; i++) {
             helpers.skipWeekend(date);
             let day = helpers.getDay(date);
-            person.derivedAvailability[date.toDateString()] =
-              person.derivedAvailability[date.toDateString()] ||
-              availabilityTemplate[day];
+            let dateString = date.toDateString();
+            if (!!person.derivedAvailability[dateString]) {
+              Vue.set(
+                person.derivedAvailability,
+                dateString,
+                person.derivedAvailability[dateString]
+              );
+            } else {
+              Vue.set(
+                person.derivedAvailability,
+                dateString,
+                availabilityTemplate[day]
+              );
+            }
 
             helpers.updateDateByOneDaySim(date);
           }

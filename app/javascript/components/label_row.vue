@@ -12,6 +12,7 @@
     />
     <ColoredCell
       v-for='(count, index) in listCompletion'
+      :key='id + "-" + index'
       :value='count'
       :maxVal='numSimulations'
     />
