@@ -55,18 +55,21 @@
           },
         ];
 
-        for(let i=1; i<= colors.length; i++) {
-          if (this.ratio < i/colors.length && this.ratio >= (i-1) / colors.length) {
-            let distanceToPrevColor = this.ratio - (i-1) / colors.length;
-            let prevColor = colors[i-1];
-            let currColor = colors[i];
+        const colorLenMin1 = colors.length - 1;
 
-            let red = prevColor.r + (currColor.r - prevColor.r) * distanceToPrevColor * colors.length;
-            let green = prevColor.g + (currColor.g - prevColor.g) * distanceToPrevColor * colors.length;
-            let blue = prevColor.b + (currColor.b - prevColor.b) * distanceToPrevColor * colors.length;
+        for(let i=0; i< colorLenMin1; i++) {
+          if (this.ratio < (i+1)/colorLenMin1 && this.ratio >= (i) / colorLenMin1) {
+            let distanceToPrevColor = this.ratio - i / colorLenMin1;
+            let prevColor = colors[i];
+            let currColor = colors[i+1];
+
+            let red = prevColor.r + (currColor.r - prevColor.r) * distanceToPrevColor * colorLenMin1;
+            let green = prevColor.g + (currColor.g - prevColor.g) * distanceToPrevColor * colorLenMin1;
+            let blue = prevColor.b + (currColor.b - prevColor.b) * distanceToPrevColor * colorLenMin1;
 
             return `rgb(${red}, ${green}, ${blue})`;
-          } else if (this.ratio == 1) {
+          }
+          else if (this.ratio == 1) {
             let lastColor = colors[colors.length-1] ;
             return `rgb(${lastColor.r}, ${lastColor.g}, ${lastColor.b})`;
           }
