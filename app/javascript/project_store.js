@@ -45,7 +45,7 @@ export function createStore() {
             data: state
           }
         ).then(() => { console.log('success!'); }).
-          fail(() => { console.log('failure'); });
+          catch(() => { console.log('failure'); });
       }
     },
     getters: {
