@@ -1,7 +1,8 @@
-/*jshint esversion: 6 */
+/*jshint esversion: 8 */
 import Vue from 'vue';
 import Vuex from 'vuex';
 import helpers from './helpers';
+import axios from 'axios';
 
 Vue.use(Vuex);
 
@@ -22,6 +23,30 @@ export function createStore() {
       draggingNodeDropX: null,
       draggingNodeDropY: null,
       updatingEstimate: false
+    },
+    actions: {
+      async save({ commit, state }) {
+        let projectId = state.projectId;
+        if (!projectId) {
+          projectId = this.getters.uuidv4();
+        }
+
+        const token =
+          document.querySelector('[name=csrf-token]').content;
+
+        axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
+
+        state.projectId = projectId;
+
+        axios.post(
+          `/${projectId}`,
+          {
+            project_id: projectId,
+            data: state
+          }
+        ).then(() => { console.log('success!'); }).
+          fail(() => { console.log('failure'); });
+      }
     },
     getters: {
       getNumDaysToShow: (state) => () => {

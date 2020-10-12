@@ -3,7 +3,10 @@
     <table>
       <thead>
         <tr>
-          <th colspan=8></th>
+          <th>
+            <button @click='save'>Save</button>
+          </th>
+          <th colspan=7></th>
           <th
             v-for='dateString in dateStrings'
           >
@@ -3031,6 +3034,9 @@
       ])
     },
     methods: {
+      save() {
+        this.$store.dispatch('save');
+      }
     },
     data: function () {
       return {

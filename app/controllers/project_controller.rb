@@ -5,24 +5,12 @@ class ProjectController < ApplicationController
   def save
     project_id = params['project_id']
 
-    if project_id
-      project = Project.find(uuid: project_id)
-      project.update(
-        data: params['project_data']
-      )
+    project = Project.find_or_create_by(uuid: project_id)
+    project.update(
+      data: params['data']
+    )
 
-      render :json, {
-        message: 'Successfully updated project'
-      }
-    else
-      Project.create(
-        uuid: project_id,
-        data: params['project_data']
-      )
-
-      render :json, {
-        message: 'Successfully created project!'
-      }
-    end
+    render plain: { message: 'Successfully updated project' }.to_json,
+      content_type: 'application/json'
   end
 end
