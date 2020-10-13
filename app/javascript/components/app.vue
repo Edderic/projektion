@@ -48,7 +48,10 @@
       </tbody>
       <thead>
         <tr>
-          <th>Name</th>
+          <th>
+            <button @click='createPerson'>+</button>
+            Name
+          </th>
           <th>M</th>
           <th>T</th>
           <th>W</th>
@@ -88,6 +91,7 @@
           :key='todo.id'
           :id='todo.id'
           :todoId='todo.todoId'
+          :todo='todo'
           :title='todo.title'
           :status='todo.status'
           :active='todo.active'
@@ -3034,6 +3038,22 @@
       ])
     },
     methods: {
+      createPerson() {
+        const person = {
+          id: this.$store.getters.uuidv4(),
+          name: 'click to edit me',
+          availabilityTemplate: {
+            'Mon': 8,
+            'Tue': 8,
+            'Wed': 8,
+            'Thu': 8,
+            'Fri': 8,
+          },
+          derivedAvailability: {},
+          labels: []
+        }
+        this.$store.commit('addNewPerson', person);
+      },
       save() {
         this.$store.dispatch('save');
       }

@@ -17,6 +17,7 @@ export function createStore() {
       people: [],
       tabIndex: -1,
       arrows: [],
+      lastClickedTodo: null,
       draggingNode: null,
       draggingNodeStartX: null,
       draggingNodeStartY: null,
@@ -49,6 +50,9 @@ export function createStore() {
       }
     },
     getters: {
+      getLastClickedTodo: (state) => () => {
+        return state.lastClickedTodo;
+      },
       getNumDaysToShow: (state) => () => {
         return state.numDaysToShow;
       },
@@ -279,6 +283,9 @@ export function createStore() {
           }
         }
       },
+      addNewPerson(state, person) {
+        state.people.push(person);
+      },
       addNode(state, node) {
         state.todos.push(node);
 
@@ -288,7 +295,7 @@ export function createStore() {
 
         this.commit('simulate');
         helpers.debug(state);
-        console.log('addNode')
+        console.log('addNode');
       },
       addArrow(state, { parentNode, childNode }) {
         state.arrows.push(
@@ -428,6 +435,12 @@ export function createStore() {
         }
 
       },
+      setPersonAvailabilityTemplate(state, { id, weekday, value }) {
+        let person = this.getters.getPersonById(id);
+
+        Vue.set(person.availabilityTemplate, weekday, value);
+
+      },
       setPersonDerivedAvailability(state, { id, dateString, value }) {
         // TODO: for some reason the estimates for the whole project are not
         // updating
@@ -552,6 +565,10 @@ export function createStore() {
             JSON.stringify(person.derivedAvailability)
           );
         }
+      },
+
+      setLastClickedTodo(state, { lastClickedTodo }) {
+        state.lastClickedTodo = lastClickedTodo;
       }
     }
   });

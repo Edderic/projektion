@@ -1,6 +1,6 @@
 <template>
     <div :class='rowClass' @click='onClick' :tabIndex='tabIndex' v-if='editable'>
-      <div class="table-cell table-id"><input type="textarea" :value="todoId" @change='setTodoId' @keyup.delete.stop></div>
+      <div class="table-cell table-id"><input type="textarea" @click.stop :value="todoId" @change='setTodoId' @keyup.delete.stop></div>
       <div class="table-cell table-title"><input type="textarea" @click.stop :value="title" @change='setTitle' @keyup.delete.stop></div>
       <div class='table-cell table-status'>
         <select :value='status' class="status-select" @change='setStatus'>
@@ -81,28 +81,82 @@
         )
       },
       onClick(e) {
+        // TODO: store the last clicked and now clicked rows so we can compare if we've changed
+        // If they are the same, then we can change the edit
+        // If they are not the same, set canEdit of the last one to false
+        // Otherwise, toggle canEdit
+        // set lastClicked to nowClicked
+
         this.$store.commit(
           'setTabIndex',
           -1
         );
 
-        this.$store.commit(
-          'setTodo',
-          {
-            id: this.id,
-            dict: {
-              canEdit: !this.canEdit,
-              active: true
+        const lastClickedTodo = this.$store.getters.getLastClickedTodo();
+
+        if (!lastClickedTodo) {
+          this.$store.commit(
+            'setTodo',
+            {
+              id: this.id,
+              dict: {
+                canEdit: false,
+                active: true
+              }
             }
-          }
-        )
+          )
+        }
+        else if (this.todo == lastClickedTodo) {
+          this.$store.commit(
+            'setTodo',
+            {
+              id: this.id,
+              dict: {
+                canEdit: !this.canEdit,
+                active: true
+              }
+            }
+          )
+        }
+        else {
+          // both exist but they are different
+
+          this.$store.commit(
+            'setTodo',
+            {
+              id: lastClickedTodo.id,
+              dict: {
+                canEdit: false,
+                active: false
+              }
+            }
+          );
+
+          this.$store.commit(
+            'setTodo',
+            {
+              id: this.id,
+              dict: {
+                canEdit: false,
+                active: true
+              }
+            }
+          );
+        }
 
         this.$store.commit(
           'setAllNodesInactiveExcept',
           {
             exceptId: this.id
           }
-        )
+        );
+
+        this.$store.commit(
+          'setLastClickedTodo',
+          {
+            lastClickedTodo: this.todo
+          }
+        );
       },
       setTitle(e) {
         this.$store.commit(
