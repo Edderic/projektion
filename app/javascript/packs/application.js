@@ -8,15 +8,16 @@
 require("@rails/activestorage").start();
 
 import Vue from 'vue';
-import App from '../components/app.vue';
+import AppBase from '../components/app_base.vue';
 import ProjectStore from '../project_store.js';
+import router from '../router';
 
 document.addEventListener('DOMContentLoaded', () => {
   const app = new Vue({
+    router,
     el: '#app',
-    render: h => h(App),
+    render: h => h(AppBase),
     store: ProjectStore,
-    components: { App }
   });
 });
 

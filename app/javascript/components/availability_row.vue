@@ -1,6 +1,10 @@
 <template>
   <tr>
-    <td>{{person.name}}</td>
+    <td v-if='nameEditable'>
+      <input type="text" :value="person.name" @change='editName' @blur='toggleNameEditable'>
+    </td>
+    <td v-else @click='toggleNameEditable'>{{person.name}}</td>
+
     <ColoredCell
       maxVal=8
       :value='person.availabilityTemplate[key]'
@@ -19,7 +23,7 @@
         <option>8</option>
       </select>
     </ColoredCell>
-    <td>apply</td>
+    <td><button @click=overrideTemplate>Override Availability</button></td>
     <td>
       <span v-for='label in person.labels'>{{label.name}}</span>
     </td>
@@ -54,16 +58,52 @@
     components: { ColoredCell },
     computed: {
       orderedAvailability() {
-        return helpers.loopThroughDates(
+        return helpers.getListOfDateValuePairs(
           this.$store.getters.getNumDaysToShow(),
-          this.derivedAvailability
+          this.person.derivedAvailability
         )
       },
       presortedWeekdayKeys() {
         return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
       }
     },
+    data: function() {
+      return {
+        nameEditable: false,
+      }
+    },
     methods: {
+      editName(e) {
+        this.$store.commit(
+          'setPerson',
+          {
+            id: this.person.id,
+            dict: {
+              name: e.target.value
+            }
+          }
+        );
+      },
+      toggleNameEditable() {
+        this.nameEditable = !this.nameEditable;
+      },
+      overrideTemplate(e) {
+        const listOfDateStrings = helpers.getListOfDateStrings(
+          this.$store.getters.getNumDaysToShow()
+        )
+
+        let newDerivedAvailability = {};
+
+        for (let dateString of listOfDateStrings) {
+          let day = dateString.split(' ')[0];
+          newDerivedAvailability[dateString] = this.person.availabilityTemplate[day];
+        }
+
+        this.$store.commit('setPersonDerivedAvailabilityBulk', {
+          id: this.person.id,
+          derivedAvailability: newDerivedAvailability
+        });
+      },
       setDerivedAvailability(e, dateString) {
         this.$store.commit('setPersonDerivedAvailability', {
           dateString,

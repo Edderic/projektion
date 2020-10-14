@@ -165,7 +165,7 @@ var helpers = {
     return list;
   },
 
-  loopThroughDates(numDaysToShow, dictDates) {
+  getListOfDateValuePairs(numDaysToShow, dictDates) {
     let list = [];
     let date = new Date();
 
@@ -178,6 +178,21 @@ var helpers = {
         dateString,
         value: dictDates[dateString]
       });
+
+      this.updateDateByOneDaySim(date);
+    }
+
+    return list;
+  },
+
+  getListOfDateStrings(numDaysToShow) {
+    let date = new Date();
+    let list = [];
+
+    for (let i=0; i<numDaysToShow; i++) {
+      this.skipWeekend(date);
+
+      list.push(date.toDateString());
 
       this.updateDateByOneDaySim(date);
     }

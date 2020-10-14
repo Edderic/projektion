@@ -3,16 +3,17 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import helpers from './helpers';
 import axios from 'axios';
+import router from  './router';
 
 Vue.use(Vuex);
 
 export function createStore() {
   return new Vuex.Store({
     state: {
-      numSims: 100,
-      numDaysToShow: null,
+      numSims: 1000,
+      numDaysToShow: 50,
       todos: [],
-      colorInterpolationScheme: null,
+      colorInterpolationScheme: [],
       labels: [],
       people: [],
       tabIndex: -1,
@@ -45,7 +46,14 @@ export function createStore() {
             project_id: projectId,
             data: state
           }
-        ).then(() => { console.log('success!'); }).
+        ).then(() => {
+          router.push({
+            name: 'savedProject',
+            params: {
+              project_id: projectId
+            }
+          });
+        }).
           catch(() => { console.log('failure'); });
       }
     },
@@ -118,30 +126,62 @@ export function createStore() {
       initialState(
         state,
         {
-          colorInterpolationScheme,
-          todos,
-          arrows,
-          labels,
-          people,
-          numDaysToShow
+          project_data
         }
       ) {
-        state.colorInterpolationScheme = colorInterpolationScheme;
-        state.todos = todos;
-        state.labels = labels;
-        state.people = people;
-        state.numDaysToShow = numDaysToShow;
+        state.colorInterpolationScheme = project_data.colorInterpolationScheme || [
+          { name: 'darkRed',
+            r: 174,
+            g: 17,
+            b: 0
+          },
+          {
+            name: 'red',
+            r: 219,
+            g: 21,
+            b: 0
+          },
+
+          {
+            name: 'orangeRed',
+            r: 240,
+            g: 90,
+            b: 0
+          },
+          {
+            name: 'yellowOrange',
+            r: 254,
+            g: 160,
+            b: 8
+          },
+          {
+            name: 'yellow',
+            r: 255,
+            g: 233,
+            b: 56
+          },
+          {
+            name: 'green',
+            r: 87,
+            g: 195,
+            b: 40
+          },
+        ];
+        state.todos = project_data.todos || [];
+        state.labels = project_data.labels || [];
+        state.people = project_data.people || [];
+        state.numDaysToShow = project_data.numDaysToShow || state.numDaysToShow;
         state.dateStrings = this.getters.getDateStrings();
 
         this.commit('initializeArrows');
         this.commit('initializeAvailability');
         this.commit('simulate');
-
-        helpers.debug(state);
-        console.log('simulate');
       },
 
       simulate(state) {
+        if (state.todos.length == 0) {
+          return;
+        }
         let people = state.people;
 
         for (let label of state.labels) {
@@ -171,8 +211,8 @@ export function createStore() {
           let count = 0;
           while(!helpers.todosAllDoneSim(state.todos)) {
             if (count == 10000) {
-              console.warn('Uh-oh. Reached an infinite loop. Breaking out of infinite loop');
-              break;
+              console.warn('Uh-oh. Might have Reached an infinite loop. Returning out of infinite loop');
+              return;
             }
 
             count++;
@@ -254,13 +294,13 @@ export function createStore() {
               Vue.set(
                 person.derivedAvailability,
                 dateString,
-                person.derivedAvailability[dateString]
+                parseInt(person.derivedAvailability[dateString])
               );
             } else {
               Vue.set(
                 person.derivedAvailability,
                 dateString,
-                availabilityTemplate[day]
+                parseInt(availabilityTemplate[day])
               );
             }
 
@@ -287,15 +327,13 @@ export function createStore() {
         state.people.push(person);
       },
       addNode(state, node) {
-        state.todos.push(node);
+        state.todos.unshift(node);
 
         this.commit('setAllNodesInactiveExcept', {
           exceptId: node.id
         });
 
         this.commit('simulate');
-        helpers.debug(state);
-        console.log('addNode');
       },
       addArrow(state, { parentNode, childNode }) {
         state.arrows.push(
@@ -307,8 +345,6 @@ export function createStore() {
 
         childNode.parentIds.push(parentNode.id);
         this.commit('simulate');
-        helpers.debug(state);
-        console.log('addArrow')
       },
 
       deleteTodo(state) {
@@ -334,8 +370,6 @@ export function createStore() {
         }
 
         this.commit('simulate');
-        helpers.debug(state);
-        console.log('deleteTodo');
       },
       startDrag(state,
         {
@@ -388,8 +422,6 @@ export function createStore() {
 
         childNode.parentIds.splice(parentIdIndex, 1);
         this.commit('simulate');
-        helpers.debug(state);
-        console.log('removeArrow');
       },
 
       setAllNodesInactiveExcept(state, { exceptId }) {
@@ -428,31 +460,46 @@ export function createStore() {
         for (let key in dict) {
           if (key == 'status') {
             this.commit('simulate');
-            helpers.debug(state);
-            console.log('setTodo');
           }
           node[key] = dict[key];
+        }
+
+      },
+      setPerson(state, { id, dict }) {
+        let person = this.getters.getPersonById(id);
+
+        for (let key in dict) {
+          person[key] = dict[key];
         }
 
       },
       setPersonAvailabilityTemplate(state, { id, weekday, value }) {
         let person = this.getters.getPersonById(id);
 
-        Vue.set(person.availabilityTemplate, weekday, value);
+        Vue.set(person.availabilityTemplate, weekday, parseInt(value));
 
       },
       setPersonDerivedAvailability(state, { id, dateString, value }) {
-        // TODO: for some reason the estimates for the whole project are not
-        // updating
-        //
         let person = this.getters.getPersonById(id);
 
         Vue.set(person.derivedAvailability, dateString, parseInt(value));
 
         this.commit('simulate');
-        helpers.debug(state);
-        console.log('setPersonDerivedAvailability');
       },
+      setPersonDerivedAvailabilityBulk(state, { id, derivedAvailability }) {
+        // TODO: for some reason, estimates are changing but are not
+        // displaying in the derivedAvailability section
+        let person = this.getters.getPersonById(id);
+
+        for (let key in derivedAvailability) {
+          Vue.set(person.derivedAvailability, key, parseInt(derivedAvailability[key]));
+        }
+
+        debugger;
+
+        this.commit('simulate');
+      },
+
       toggleArrow(state, {id}) {
         const parentNode = this.getters.getActiveNode();
         const childNode = this.getters.getTodoById(id);
@@ -524,17 +571,13 @@ export function createStore() {
       finishUpdateEstimate(state) {
         if (state.updatingEstimate) {
           this.commit('simulate');
-          helpers.debug(state);
           state.updatingEstimate = false;
-          console.log('finishUpdateEstimate');
         }
       },
       updateTodoEstimate(state, {id, estimateIndex, value}) {
         let todo = this.getters.getTodoById(id);
 
         Vue.set(todo.estimates, estimateIndex, value);
-        helpers.debug(state);
-        console.log('updateTodoEstimate');
       },
 
       prepareTodosForSim(state, {i}) {
