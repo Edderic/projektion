@@ -12,14 +12,15 @@ export default {
       this.$store.commit(
         'initialState',
         {
-          project_data: window.gon.project_data
+          projectData: window.gon.project_data,
+          projectUuid: window.gon.project_uuid
         }
       );
     } else {
       this.$store.commit(
         'initialState',
           {
-            project_data: {
+            projectData: {
               labels: [{
                 name: 'All',
                 id: this.$store.getters.uuidv4(),

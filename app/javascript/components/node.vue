@@ -2,7 +2,7 @@
   <g
     :tabIndex='tabIndex'
   >
-    <text :x="x" :y="middleTextY" font-size="10" text-anchor="middle" fill="black">
+    <text :x="x" :y="middleTextY" font-size="7" text-anchor="middle" fill="black">
       {{middleText}}
     </text>
     <text :x="x" :y="bottomTextY" font-size="10" text-anchor="middle" fill="black">

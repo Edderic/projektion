@@ -4,6 +4,7 @@ class ProjectController < ApplicationController
 
   def show
     gon.project_data = project.data
+    gon.project_uuid = project.uuid
   end
 
   def save
@@ -18,10 +19,10 @@ class ProjectController < ApplicationController
   private
 
   def project
-    @project ||= Project.find_or_create_by(uuid: project_id)
+    @project ||= Project.find_or_create_by(uuid: project_uuid)
   end
 
-  def project_id
-    params['project_id']
+  def project_uuid
+    params['project_uuid']
   end
 end

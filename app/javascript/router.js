@@ -12,7 +12,7 @@ export const routes = [
   },
   {
     name: 'savedProject',
-    path: '/:project_id',
+    path: '/:project_uuid',
     component: App
   },
 ];

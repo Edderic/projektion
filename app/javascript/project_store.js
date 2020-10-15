@@ -10,7 +10,7 @@ Vue.use(Vuex);
 export function createStore() {
   return new Vuex.Store({
     state: {
-      numSims: 1000,
+      numSims: 100,
       numDaysToShow: 50,
       todos: [],
       colorInterpolationScheme: [],
@@ -28,9 +28,9 @@ export function createStore() {
     },
     actions: {
       async save({ commit, state }) {
-        let projectId = state.projectId;
-        if (!projectId) {
-          projectId = this.getters.uuidv4();
+        let projectUuid = state.projectUuid;
+        if (!projectUuid) {
+          projectUuid = this.getters.uuidv4();
         }
 
         const token =
@@ -38,19 +38,20 @@ export function createStore() {
 
         axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
 
-        state.projectId = projectId;
+        state.projectUuid = projectUuid;
 
         axios.post(
-          `/${projectId}`,
+          `/${projectUuid}`,
           {
-            project_id: projectId,
+            project_uuid: projectUuid,
             data: state
           }
         ).then(() => {
+          console.log(router);
           router.push({
             name: 'savedProject',
             params: {
-              project_id: projectId
+              project_uuid: projectUuid
             }
           });
         }).
@@ -126,10 +127,12 @@ export function createStore() {
       initialState(
         state,
         {
-          project_data
+          projectData,
+          projectUuid
         }
       ) {
-        state.colorInterpolationScheme = project_data.colorInterpolationScheme || [
+        state.projectUuid = projectData.projectUuid;
+        state.colorInterpolationScheme = projectData.colorInterpolationScheme || [
           { name: 'darkRed',
             r: 174,
             g: 17,
@@ -167,10 +170,10 @@ export function createStore() {
             b: 40
           },
         ];
-        state.todos = project_data.todos || [];
-        state.labels = project_data.labels || [];
-        state.people = project_data.people || [];
-        state.numDaysToShow = project_data.numDaysToShow || state.numDaysToShow;
+        state.todos = projectData.todos || [];
+        state.labels = projectData.labels || [];
+        state.people = projectData.people || [];
+        state.numDaysToShow = projectData.numDaysToShow || state.numDaysToShow;
         state.dateStrings = this.getters.getDateStrings();
 
         this.commit('initializeArrows');
@@ -290,7 +293,7 @@ export function createStore() {
             helpers.skipWeekend(date);
             let day = helpers.getDay(date);
             let dateString = date.toDateString();
-            if (!!person.derivedAvailability[dateString]) {
+            if (!person.derivedAvailability[dateString]) {
               Vue.set(
                 person.derivedAvailability,
                 dateString,
@@ -313,13 +316,17 @@ export function createStore() {
         for (let todo of state.todos) {
           for (let parentId of todo.parentIds) {
             let parent = this.getters.getTodoById(parentId);
-
-            state.arrows.push(
-              {
-                parentNode: parent,
-                childNode: todo
-              }
-            );
+            if (!parent) {
+              let deleteIndex = todo.parentIds.findIndex((id) => id == parentId);
+              todo.parentIds.splice(deleteIndex, 1);
+            } else {
+              state.arrows.push(
+                {
+                  parentNode: parent,
+                  childNode: todo
+                }
+              );
+            }
           }
         }
       },

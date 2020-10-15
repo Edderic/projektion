@@ -2,7 +2,7 @@
   <tr>
     <td>{{name}}</td>
     <td colspan=6>
-      <select value='deadline' @change='setDeadlineForLabel'>
+      <select :value='deadline' @change='setDeadlineForLabel'>
         <option v-for='dateString in dateStrings'>{{dateString}}</option>
       </select>
     </td>
