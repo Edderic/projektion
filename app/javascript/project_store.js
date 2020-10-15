@@ -194,7 +194,7 @@ export function createStore() {
           this.commit('prepareTodosForSim', {i});
           this.commit('copyAvailabilityForSim');
 
-          let date = new Date();
+          let date = helpers.getRoughDate();
           helpers.skipWeekend(date);
 
           // prepare what's done
@@ -438,8 +438,7 @@ export function createStore() {
         let label = this.getters.getLabelById(id);
 
         for (let key in dict) {
-          label[key] = dict[key];
-
+          Vue.set(label, key, dict[key]);
 
           if (key == 'deadline') {
             Vue.set(
@@ -458,10 +457,11 @@ export function createStore() {
         let node = this.getters.getTodoById(id);
 
         for (let key in dict) {
+          Vue.set(node, key, dict[key]);
+
           if (key == 'status') {
             this.commit('simulate');
           }
-          node[key] = dict[key];
         }
 
       },
@@ -470,6 +470,7 @@ export function createStore() {
 
         for (let key in dict) {
           person[key] = dict[key];
+          Vue.set(person, key, dict[key]);
         }
 
       },
@@ -494,8 +495,6 @@ export function createStore() {
         for (let key in derivedAvailability) {
           Vue.set(person.derivedAvailability, key, parseInt(derivedAvailability[key]));
         }
-
-        debugger;
 
         this.commit('simulate');
       },
