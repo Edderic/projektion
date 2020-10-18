@@ -25,8 +25,9 @@
 
         <tr>
           <th>Label</th>
-          <th colspan=6>Deadline</th>
+          <th colspan=5>Deadline</th>
           <th>On Track</th>
+          <th></th>
           <th
             v-for='dateString in dateStrings'
           >
@@ -57,7 +58,6 @@
           <th>T</th>
           <th>F</th>
           <th></th>
-          <th>Labels</th>
         </tr>
       </thead>
       <tbody>
@@ -159,6 +159,9 @@
 </script>
 
 <style scoped>
+  #project {
+    font-family: system-ui;
+  }
   .add-person-button {
     width: 72px;
   }

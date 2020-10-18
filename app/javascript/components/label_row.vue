@@ -1,20 +1,23 @@
 <template>
   <tr>
     <td>{{name}}</td>
-    <td colspan=6>
+    <td colspan=5 class='deadline-cell'>
       <select :value='deadline' @change='setDeadlineForLabel'>
         <option v-for='dateString in dateStrings'>{{dateString}}</option>
       </select>
     </td>
     <ColoredCell
+      class="availability-cell on-track-cell"
       :value='onTrack'
       :maxVal=1
     />
+    <td></td>
     <ColoredCell
       v-for='(count, index) in listCompletion'
       :key='id + "-" + index'
       :value='count'
       :maxVal='numSimulations'
+      class="availability-cell"
     />
   </tr>
 </template>
@@ -51,4 +54,14 @@
 </script>
 
 <style scoped>
+  .deadline-cell {
+    text-align: center;
+  }
+  .availability-cell {
+    text-align: center;
+  }
+  .on-track-cell {
+    padding: 0;
+    font-weight: 700;
+  }
 </style>
