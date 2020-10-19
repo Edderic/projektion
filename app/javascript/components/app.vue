@@ -215,6 +215,8 @@
 
   .todo-rows {
     border: 1px solid black;
-    width: 50%
+    width: 50%;
+    height: 800px;
+    overflow: auto;
   }
 </style>
