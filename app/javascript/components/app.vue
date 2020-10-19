@@ -87,6 +87,7 @@
         </div>
         <TodoRow
           v-for='todo in todos'
+          class='todo-row'
           :key='todo.id'
           :id='todo.id'
           :todoId='todo.todoId'
@@ -195,6 +196,8 @@
 
   .table-heading {
     display: flex;
+    position: absolute;
+    background: white;
   }
 
   .header-id {
@@ -218,5 +221,8 @@
     width: 50%;
     height: 800px;
     overflow: auto;
+  }
+  .todo-row:nth-child(2) {
+      margin-top: 3em;
   }
 </style>
