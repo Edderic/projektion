@@ -9,6 +9,7 @@
       maxVal=8
       :value='person.availabilityTemplate[key]'
       v-for='key in presortedWeekdayKeys'
+      :key='key'
       :style="{ padding: availabilityPadding + 'px' }"
     >
       <select :value='person.availabilityTemplate[key]' @change='setAvailabilityTemplate($event, key)'>
