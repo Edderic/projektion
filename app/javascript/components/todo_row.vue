@@ -3,6 +3,7 @@
       <div class="table-cell table-id"><input type="textarea" @click.stop :value="todoId" @change='setTodoId' @keyup.delete.stop></div>
       <div class="table-cell table-title"><input type="textarea" @click.stop :value="title" @change='setTitle' @keyup.delete.stop></div>
       <div class='table-cell table-status'>
+        <div :class='statusClasses'></div>
         <select :value='status' class="status-select" @change='setStatus'>
           <option>Not started</option>
           <option>In progress</option>
@@ -22,6 +23,7 @@
       <div class="table-cell table-id">{{ todoId }}</div>
       <div class="table-cell table-title">{{ title }}</div>
       <div class='table-cell table-status'>
+        <div :class='statusClasses'></div>
         <select :value='status' class="status-select" @change='setStatus'>
           <option>Not started</option>
           <option>In progress</option>
@@ -42,6 +44,19 @@
   export default {
     components: { DraggableBarGraph },
     computed: {
+      statusClasses() {
+        let classes = ['status-box'];
+
+        if (this.status == 'Done') {
+          classes.push('status-green');
+        } else if (this.status == 'In progress') {
+          classes.push('status-orange');
+        } else {
+          classes.push('status-black')
+        }
+
+        return classes;
+      },
       rowClass() {
         if (this.active) {
           return ['row', 'active'];
@@ -224,6 +239,7 @@
 
   .table-status {
     width: 7em;
+    display: flex;
   }
 
   input {
@@ -241,5 +257,24 @@
   .row {
     display: flex;
     border-bottom: 1px solid black;
+  }
+  .status-box {
+    width: 20px;
+    height: 20px;
+  }
+  .status-green {
+    background-color: green;
+  }
+
+  .status-orange {
+    background-color: orange;
+  }
+
+  .status-black {
+    background-color: black;
+  }
+
+  .status-select {
+    height: fit-content;
   }
 </style>
