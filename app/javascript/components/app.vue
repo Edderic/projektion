@@ -6,7 +6,7 @@
           <th>
             <button @click='save'>Save</button>
           </th>
-          <th colspan=7></th>
+          <th colspan=8></th>
           <th
             v-for='dateString in dateStrings'
           >
@@ -15,7 +15,7 @@
         </tr>
 
         <tr>
-          <th colspan=8></th>
+          <th colspan=9></th>
           <th
             v-for='dateString in dateStrings'
           >
@@ -26,7 +26,7 @@
         <tr>
           <th>Label</th>
           <th colspan=5>Deadline</th>
-          <th>On Track</th>
+          <th colspan=2>On Track</th>
           <th></th>
           <th
             v-for='dateString in dateStrings'
@@ -83,7 +83,7 @@
             <div class='header-cell header-id'>ID</div>
             <div class='header-cell header-title'>Title</div>
             <div class='header-cell header-status'>Status</div>
-            <div class='header-cell header-estimate'>Estimate</div>
+            <div class='header-cell header-estimate'>Probabilistic Estimate (Days)</div>
         </div>
         <TodoRow
           v-for='todo in todos'

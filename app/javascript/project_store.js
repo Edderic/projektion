@@ -354,6 +354,14 @@ export function createStore() {
         this.commit('simulate');
       },
 
+      deletePerson(state, { id }) {
+        let person = this.getters.getPersonById(id);
+        const personIndex = state.people.findIndex(
+          (person) => person.id == id
+        );
+
+        state.people.splice(personIndex, 1);
+      },
       deleteTodo(state) {
         const activeNode = this.getters.getActiveNode();
 

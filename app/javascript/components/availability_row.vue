@@ -24,7 +24,12 @@
         <option>8</option>
       </select>
     </ColoredCell>
-    <td><button @click=overrideTemplate>Override Availability</button></td>
+    <td>
+      <button @click=overrideTemplate>Override Availability</button>
+    </td>
+    <td>
+      <button @click=deletePerson>Delete Person</button>
+    </td>
     <td>
       <span v-for='label in person.labels'>{{label.name}}</span>
     </td>
@@ -87,6 +92,14 @@
       },
       toggleNameEditable() {
         this.nameEditable = !this.nameEditable;
+      },
+      deletePerson() {
+        this.$store.commit(
+          'deletePerson',
+          {
+            id: this.person.id
+          }
+        );
       },
       overrideTemplate(e) {
         const listOfDateStrings = helpers.getListOfDateStrings(

@@ -7,6 +7,7 @@
       </select>
     </td>
     <ColoredCell
+      colspan=2
       class="availability-cell on-track-cell"
       :value='onTrack'
       :maxVal=1
