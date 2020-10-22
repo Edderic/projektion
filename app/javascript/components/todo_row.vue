@@ -20,8 +20,8 @@
     <div :class='rowClass' @click='onClick' :tabIndex='tabIndex'
       v-on:keyup.delete='deleteTodo'
      v-else>
-      <div class="table-cell table-id">{{ todoId }}</div>
-      <div class="table-cell table-title">{{ title }}</div>
+      <div class="table-cell table-id pointable">{{ todoId }}</div>
+      <div class="table-cell table-title pointable">{{ title }}</div>
       <div class='table-cell table-status'>
         <div :class='statusClasses'></div>
         <select :value='status' class="status-select" @change='setStatus'>
@@ -276,5 +276,9 @@
 
   .status-select {
     height: fit-content;
+  }
+
+  .pointable {
+    cursor: pointer;
   }
 </style>

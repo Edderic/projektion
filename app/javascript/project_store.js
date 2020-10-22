@@ -12,7 +12,7 @@ export function createStore() {
     state: {
       numSims: 1000,
       simulationStale: true,
-      simCount: 0,
+      simName: 'edit simulation name',
       numDaysToShow: 50,
       todos: [],
       colorInterpolationScheme: [],
@@ -126,6 +126,9 @@ export function createStore() {
       }
     },
     mutations: {
+      editSimName(state, simName) {
+        state.simName = simName;
+      },
       initialState(
         state,
         {
@@ -134,6 +137,7 @@ export function createStore() {
         }
       ) {
         state.projectUuid = projectData.projectUuid;
+        state.simName = projectData.simName || 'edit simulation name';
         state.colorInterpolationScheme = projectData.colorInterpolationScheme || [
           { name: 'darkRed',
             r: 174,

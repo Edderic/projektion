@@ -3,7 +3,7 @@
     <td v-if='nameEditable'>
       <input type="text" :value="person.name" @change='editName' @blur='toggleNameEditable'>
     </td>
-    <td v-else @click='toggleNameEditable'>{{person.name}}</td>
+    <td v-else @click='toggleNameEditable' class='pointable'>{{person.name}}</td>
 
     <ColoredCell
       maxVal=8
@@ -142,4 +142,7 @@
 </script>
 
 <style scoped>
+  .pointable {
+    cursor: pointer;
+  }
 </style>

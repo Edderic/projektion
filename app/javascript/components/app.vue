@@ -3,11 +3,13 @@
     <table>
       <thead>
         <tr>
-          <th>
-            <button @click='save'>Save</button>
+          <th colspan=6
+            class='title'
+          >
+            projektion:
+            <span class='definition'>projections for your projects</span>
           </th>
-          <th colspan=7></th>
-          <th></th>
+          <th colspan=3></th>
           <th
             v-for='dateString in dateStrings'
           >
@@ -16,8 +18,21 @@
         </tr>
 
         <tr>
-          <th colspan=6></th>
-          <th colspan=2>
+          <th colspan=6 >
+            <input type="text"
+              :value="simName"
+              @change='setSimName'
+              v-if="simNameEditable"
+              @blur='toggleSimNameEditable'
+            >
+            <span class='pointable' @click='toggleSimNameEditable' v-else>
+              {{ simName }}
+            </span>
+          </th>
+          <th>
+            <button @click='save'>Save</button>
+          </th>
+          <th>
             <div :class='simulationButtonClasses'>
               <button @click='simulate'>Simulate</button>
             </div>
@@ -31,7 +46,7 @@
         </tr>
 
         <tr>
-          <th>Label</th>
+          <th></th>
           <th colspan=5>Deadline</th>
           <th colspan=2>On Track</th>
           <th></th>
@@ -135,7 +150,7 @@
           'people',
           'numberOfDaysToPotentiallyShow',
           'dateStrings',
-          'simCount',
+          'simName',
           'numSims',
           'simulationStale'
       ]),
@@ -167,16 +182,23 @@
         }
         this.$store.commit('addNewPerson', person);
       },
+      setSimName(e) {
+        this.$store.commit('editSimName', e.target.value);
+      },
       save() {
         this.$store.dispatch('save');
       },
       simulate() {
         this.$store.commit('simulate');
+      },
+      toggleSimNameEditable() {
+        this.simNameEditable = !this.simNameEditable;
       }
     },
     data: function () {
       return {
-        components: []
+        components: [],
+        simNameEditable: false
       }
     }
   }
@@ -262,5 +284,11 @@
   }
   .todo-row:nth-child(2) {
       margin-top: 3em;
+  }
+  .title .definition {
+    font-style: italic;
+  }
+  .pointable {
+    cursor: pointer;
   }
 </style>

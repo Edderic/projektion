@@ -1,6 +1,6 @@
 <template>
   <tr>
-    <td>{{name}}</td>
+    <td></td>
     <td colspan=5 class='deadline-cell'>
       <select :value='deadline' @change='setDeadlineForLabel'>
         <option v-for='dateString in dateStrings'>{{dateString}}</option>
