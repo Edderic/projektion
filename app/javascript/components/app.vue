@@ -6,7 +6,8 @@
           <th>
             <button @click='save'>Save</button>
           </th>
-          <th colspan=8></th>
+          <th colspan=7></th>
+          <th></th>
           <th
             v-for='dateString in dateStrings'
           >
@@ -15,7 +16,13 @@
         </tr>
 
         <tr>
-          <th colspan=9></th>
+          <th colspan=6></th>
+          <th colspan=2>
+            <div :class='simulationButtonClasses'>
+              <button @click='simulate'>Simulate</button>
+            </div>
+          </th>
+          <th></th>
           <th
             v-for='dateString in dateStrings'
           >
@@ -128,7 +135,20 @@
           'people',
           'numberOfDaysToPotentiallyShow',
           'dateStrings',
-      ])
+          'simCount',
+          'numSims',
+          'simulationStale'
+      ]),
+
+      simulationButtonClasses() {
+        let classes = ['simulation-button'];
+
+        if (this.simulationStale) {
+          classes.push('stale-simulation')
+        }
+
+        return classes;
+      }
     },
     methods: {
       createPerson() {
@@ -149,6 +169,9 @@
       },
       save() {
         this.$store.dispatch('save');
+      },
+      simulate() {
+        this.$store.commit('simulate');
       }
     },
     data: function () {
@@ -162,6 +185,21 @@
 <style scoped>
   #project {
     font-family: system-ui;
+  }
+  .stale-simulation {
+    animation: pulse 1s infinite;
+    animation-direction: alternate;
+  }
+  .simulation-button button {
+    width: 100%;
+  }
+  @keyframes pulse {
+    0% {
+      border: 3px solid #001F3F;
+    }
+    100% {
+      border: 3px solid #FF4136;
+    }
   }
   .add-person-button {
     width: 72px;

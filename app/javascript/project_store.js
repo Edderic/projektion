@@ -10,7 +10,9 @@ Vue.use(Vuex);
 export function createStore() {
   return new Vuex.Store({
     state: {
-      numSims: 100,
+      numSims: 1000,
+      simulationStale: true,
+      simCount: 0,
       numDaysToShow: 50,
       todos: [],
       colorInterpolationScheme: [],
@@ -178,7 +180,10 @@ export function createStore() {
 
         this.commit('initializeArrows');
         this.commit('initializeAvailability');
-        this.commit('simulate');
+      },
+
+      setSimulationStale(state, stale) {
+        state.simulationStale = stale;
       },
 
       simulate(state) {
@@ -281,6 +286,8 @@ export function createStore() {
             state.numSims
           )
         );
+
+        this.commit('setSimulationStale', false);
       },
 
       initializeAvailability(state) {
@@ -340,7 +347,7 @@ export function createStore() {
           exceptId: node.id
         });
 
-        this.commit('simulate');
+        this.commit('setSimulationStale', true);
       },
       addArrow(state, { parentNode, childNode }) {
         state.arrows.push(
@@ -351,7 +358,7 @@ export function createStore() {
         );
 
         childNode.parentIds.push(parentNode.id);
-        this.commit('simulate');
+        this.commit('setSimulationStale', true);
       },
 
       deletePerson(state, { id }) {
@@ -384,7 +391,7 @@ export function createStore() {
           state.arrows = arrows;
         }
 
-        this.commit('simulate');
+        this.commit('setSimulationStale', true);
       },
       startDrag(state,
         {
@@ -436,7 +443,7 @@ export function createStore() {
         );
 
         childNode.parentIds.splice(parentIdIndex, 1);
-        this.commit('simulate');
+        this.commit('setSimulationStale', true);
       },
 
       setAllNodesInactiveExcept(state, { exceptId }) {
@@ -475,7 +482,7 @@ export function createStore() {
           Vue.set(node, key, dict[key]);
 
           if (key == 'status') {
-            this.commit('simulate');
+            this.commit('setSimulationStale', true);
           }
         }
 
@@ -500,7 +507,7 @@ export function createStore() {
 
         Vue.set(person.derivedAvailability, dateString, parseInt(value));
 
-        this.commit('simulate');
+        this.commit('setSimulationStale', true);
       },
       setPersonDerivedAvailabilityBulk(state, { id, derivedAvailability }) {
         // TODO: for some reason, estimates are changing but are not
@@ -511,7 +518,7 @@ export function createStore() {
           Vue.set(person.derivedAvailability, key, parseInt(derivedAvailability[key]));
         }
 
-        this.commit('simulate');
+        this.commit('setSimulationStale', true);
       },
 
       toggleArrow(state, {id}) {
@@ -584,7 +591,7 @@ export function createStore() {
       },
       finishUpdateEstimate(state) {
         if (state.updatingEstimate) {
-          this.commit('simulate');
+          this.commit('setSimulationStale', true);
           state.updatingEstimate = false;
         }
       },
