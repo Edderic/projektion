@@ -222,7 +222,7 @@ export function createStore() {
 
           let count = 0;
           while(!helpers.todosAllDoneSim(state.todos)) {
-            if (count == 10000) {
+            if (count == 100000) {
               console.warn('Uh-oh. Might have Reached an infinite loop. Returning out of infinite loop');
               return;
             }
