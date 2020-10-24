@@ -341,6 +341,14 @@ export function createStore() {
           }
         }
       },
+      addLabel(state, label) {
+        label.completionDistribution = label.completionDistribution ||
+          helpers.setupSimCounts(
+            state.numDaysToShow
+          );
+
+        state.labels.push(label);
+      },
       addNewPerson(state, person) {
         state.people.push(person);
       },

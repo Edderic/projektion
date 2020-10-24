@@ -1,6 +1,11 @@
 <template>
   <tr>
-    <td></td>
+    <td v-if='editName'>
+      <input type="text" @change='setNameForLabel' @blur='toggleEditName'>
+    </td>
+    <td v-else @click='toggleEditName'>
+      {{ name }}
+    </td>
     <td colspan=5 class='deadline-cell'>
       <select :value='deadline' @change='setDeadlineForLabel'>
         <option v-for='dateString in dateStrings'>{{dateString}}</option>
@@ -33,7 +38,20 @@
         return this.$store.getters.getNumSimulations();
       },
     },
+    data() {
+      return {
+        editName: false
+      }
+    },
     methods: {
+      setNameForLabel(e) {
+        this.$store.commit('setLabel', {
+          id: this.id,
+          dict: {
+            name: e.target.value
+          }
+        });
+      },
       setDeadlineForLabel(e) {
         this.$store.commit('setLabel', {
           id: this.id,
@@ -41,6 +59,9 @@
             deadline: e.target.value
           }
         })
+      },
+      toggleEditName() {
+        this.editName = !this.editName;
       }
     },
     props: [

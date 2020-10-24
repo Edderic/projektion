@@ -46,7 +46,9 @@
         </tr>
 
         <tr>
-          <th></th>
+          <th>
+            <button @click="addLabel">+ Label</button>
+          </th>
           <th colspan=5>Deadline</th>
           <th colspan=2>On Track</th>
           <th></th>
@@ -166,6 +168,15 @@
       }
     },
     methods: {
+      addLabel() {
+        this.$store.commit(
+          'addLabel',
+          {
+            id: this.$store.getters.uuidv4(),
+            name: 'click to edit me',
+          }
+        )
+      },
       createPerson() {
         const person = {
           id: this.$store.getters.uuidv4(),
