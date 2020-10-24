@@ -61,9 +61,10 @@
       </thead>
       <tbody>
         <LabelRow
-          v-for='label in labels'
+          v-for='(label, index) in labels'
           :key='label.id'
           :id='label.id'
+          :allLabel='index == 0'
           :name='label.name'
           :on-track='label.onTrack'
           :list-completion='label.listCompletion'
@@ -174,6 +175,7 @@
           {
             id: this.$store.getters.uuidv4(),
             name: 'click to edit me',
+
           }
         )
       },

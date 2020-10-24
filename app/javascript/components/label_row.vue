@@ -61,11 +61,17 @@
         })
       },
       toggleEditName() {
+        if (this.allLabel) {
+          this.editName = false;
+          return;
+        }
+
         this.editName = !this.editName;
       }
     },
     props: [
       'id',
+      'allLabel',
       'name',
       'deadline',
       'listCompletion',
