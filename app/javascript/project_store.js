@@ -87,8 +87,24 @@ export function createStore() {
       getTodoById: (state) => (id) => {
         return state.todos.find(todo => todo.id === id);
       },
+      getTodosForLabelById: (state) => (id) => {
+        let todos = [];
+
+        for (let todo of state.todos) {
+          for (let labelId of todo.labelIds) {
+            if (labelId === id) {
+              todos.push(todo);
+            }
+          }
+        }
+
+        return todos;
+      },
       getLabelById: (state) => (id) => {
         return state.labels.find(label => label.id === id);
+      },
+      getLabelByName: (state) => (name) => {
+        return state.labels.find(label => label.name === name);
       },
       getLabelsForTodo: (state, getters) => (id) => {
         let todo = getters.getTodoById(id);
@@ -201,6 +217,24 @@ export function createStore() {
 
         this.commit('initializeArrows');
         this.commit('initializeAvailability');
+        this.commit('ensureTodosAreAssociatedToAllLabel');
+      },
+
+      ensureTodosAreAssociatedToAllLabel(state) {
+        let allLabel = this.getters.getLabelByName('All');
+        let hasAllLabel = false;
+
+        for (let todo of state.todos) {
+          for (let labelId of todo.labelIds) {
+            if (labelId === allLabel.id) {
+              hasAllLabel = true;
+            }
+          }
+
+          if (!hasAllLabel) {
+            todo.labelIds.push(allLabel.id)
+          }
+        }
       },
 
       setSimulationStale(state, stale) {
@@ -273,30 +307,36 @@ export function createStore() {
             helpers.skipWeekend(date);
           }
 
-          let dates = state.todos.map((todo) => todo.simDoneAt[i]);
-          let maxDate = helpers.findMaxDate(dates);
-          // TODO: make decisions about which label should be updated
-          state.labels[0].completionDistribution[maxDate.toDateString()] += 1;
+          for (let label of state.labels) {
+            let todos = this.getters.getTodosForLabelById(label.id);
+
+            let dates = todos.map((todo) => todo.simDoneAt[i]);
+            let maxDate = helpers.findMaxDate(dates);
+
+            label.completionDistribution[maxDate.toDateString()] += 1;
+          }
         }
 
-        Vue.set(
-          state.labels[0],
-          'listCompletion',
-          helpers.cumulativeDistribution(
-            state.labels[0].completionDistribution,
-            state.numDaysToShow
-          )
-        );
+        for (let label of state.labels) {
+          Vue.set(
+            label,
+            'listCompletion',
+            helpers.cumulativeDistribution(
+              label.completionDistribution,
+              state.numDaysToShow
+            )
+          );
 
-        Vue.set(
-          state.labels[0],
-          'onTrack',
-          helpers.cumulativeDistributionValueForDate(
-            state.labels[0].completionDistribution,
-            state.labels[0].deadline,
-            state.numSims
-          )
-        );
+          Vue.set(
+            label,
+            'onTrack',
+            helpers.cumulativeDistributionValueForDate(
+              label.completionDistribution,
+              label.deadline,
+              state.numSims
+            )
+          );
+        }
 
         this.commit('setSimulationStale', false);
       },
