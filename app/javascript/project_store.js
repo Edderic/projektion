@@ -273,18 +273,8 @@ export function createStore() {
             helpers.skipWeekend(date);
           }
 
-          let maxDate = helpers.getRoughDate();
-          let newDate;
-
-          for (let todo of state.todos) {
-            let newDate = new Date(todo.simDoneAt[i]);
-            // TODO: might want to filter by labelId
-
-            if (newDate > maxDate) {
-              maxDate = newDate;
-            }
-          }
-
+          let dates = state.todos.map((todo) => todo.simDoneAt[i]);
+          let maxDate = helpers.findMaxDate(dates);
           // TODO: make decisions about which label should be updated
           state.labels[0].completionDistribution[maxDate.toDateString()] += 1;
         }

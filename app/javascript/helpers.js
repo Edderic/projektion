@@ -26,6 +26,21 @@ var helpers = {
     }
   },
 
+  findMaxDate(datesArray) {
+    let maxDate = helpers.getRoughDate();
+    let newDate;
+
+    for (let date of datesArray) {
+      let newDate = new Date(date);
+
+      if (newDate > maxDate) {
+        maxDate = newDate;
+      }
+    }
+
+    return maxDate;
+  },
+
   // Assumes there are at least two colors
   interpolateColor(colors, ratio) {
     if (colors.length < 2) {
