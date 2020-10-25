@@ -399,7 +399,7 @@ export function createStore() {
         let todo = this.getters.getTodoById(id);
 
         const labelIndex = todo.labelIds.findIndex(
-          (labelId) => labelId === id
+          (id) => labelId === id
         );
 
         todo.labelIds.splice(labelIndex, 1);

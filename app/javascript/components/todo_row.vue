@@ -17,7 +17,7 @@
         />
       </div>
       <div class='table-cell'>
-        <div v-for='label in allLabels'>
+        <div v-for='label in addableLabels'>
           <input type="checkbox" :value="label.id" @change='updateCheckbox' :checked="labelAssociatedToTodo(label.id)">
           <span>{{ label.name }}</span>
         </div>
@@ -46,7 +46,7 @@
         />
       </div>
       <div class='table-cell'>
-        <div v-for='label in allLabels'>
+        <div v-for='label in addableLabels'>
           <input type="checkbox" :value="label.id" @change='updateCheckbox' :checked="labelAssociatedToTodo(label.id)">
           <span>{{ label.name }}</span>
         </div>
@@ -94,16 +94,9 @@
       },
       addableLabels() {
         let labelsThatCanBeAdded = [];
-        let match = false;
 
         for (let allLabel of this.allLabels) {
-          for (let labelId of this.todoLabelIds) {
-            if (allLabel.id == labelId) {
-              match = true;
-            }
-          }
-
-          if (!match && allLabel.name != 'All' ) {
+          if (allLabel.name != 'All') {
             labelsThatCanBeAdded.push(allLabel)
           }
         }
@@ -252,7 +245,7 @@
           )
         } else {
           this.$store.commit(
-            'removeLabelFromTodo', {
+            'deleteLabelFromTodo', {
               id: this.id,
               labelId: e.target.value
             }
