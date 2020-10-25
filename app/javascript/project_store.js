@@ -90,6 +90,23 @@ export function createStore() {
       getLabelById: (state) => (id) => {
         return state.labels.find(label => label.id === id);
       },
+      getLabelsForTodo: (state, getters) => (id) => {
+        let todo = getters.getTodoById(id);
+
+        if (!todo.labelIds) {
+          todo.labelIds = [];
+        }
+
+        return state.labels.filter((label) => {
+          for (let labelId of todo.labelIds) {
+            if (labelId === label.id) {
+              return true;
+            }
+          }
+
+          return false;
+        });
+      },
       getPersonById: (state) => (id) => {
         return state.people.find(person => person.id === id);
       },
@@ -373,13 +390,34 @@ export function createStore() {
         this.commit('setSimulationStale', true);
       },
 
+      addLabelToTodo(state, { id, labelId }) {
+        let todo = this.getters.getTodoById(id);
+
+        todo.labelIds.push(labelId);
+      },
+      deleteLabelFromTodo(state, { id, labelId }) {
+        let todo = this.getters.getTodoById(id);
+
+        const labelIndex = todo.labelIds.findIndex(
+          (labelId) => labelId === id
+        );
+
+        todo.labelIds.splice(labelIndex, 1);
+      },
       deletePerson(state, { id }) {
-        let person = this.getters.getPersonById(id);
         const personIndex = state.people.findIndex(
           (person) => person.id == id
         );
 
         state.people.splice(personIndex, 1);
+      },
+      deleteLabel(state, {id}) {
+        const labelIndex = state.labels.findIndex(
+          (label) => label.id == id
+        );
+
+        // TODO: remove the label_id for each todo
+        state.labels.splice(labelIndex, 1);
       },
       deleteTodo(state) {
         const activeNode = this.getters.getActiveNode();

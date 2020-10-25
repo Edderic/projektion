@@ -12,11 +12,14 @@
       </select>
     </td>
     <ColoredCell
-      colspan=2
+      colspan=1
       class="availability-cell on-track-cell"
       :value='onTrack'
       :maxVal=1
     />
+    <td>
+      <button @click='deleteLabel'>Delete Label</button>
+    </td>
     <td></td>
     <ColoredCell
       v-for='(count, index) in listCompletion'
@@ -44,6 +47,8 @@
       }
     },
     methods: {
+      deleteLabel(e) {
+      },
       setNameForLabel(e) {
         this.$store.commit('setLabel', {
           id: this.id,

@@ -50,8 +50,8 @@
             <button @click="addLabel">+ Label</button>
           </th>
           <th colspan=5>Deadline</th>
-          <th colspan=2>On Track</th>
-          <th></th>
+          <th colspan=1>On Track</th>
+          <th colspan=2></th>
           <th
             v-for='dateString in dateStrings'
           >
@@ -109,6 +109,7 @@
             <div class='header-cell header-title'>Title</div>
             <div class='header-cell header-status'>Status</div>
             <div class='header-cell header-estimate'>Probabilistic Estimate (Days)</div>
+            <div class='header-cell header-estimate'>Labels</div>
         </div>
         <TodoRow
           v-for='todo in todos'
@@ -122,6 +123,8 @@
           :active='todo.active'
           :canEdit='todo.canEdit'
           :estimates='todo.estimates'
+          :todoLabelIds='todo.labelIds'
+          :allLabels='labels'
         />
       </div>
     </div>

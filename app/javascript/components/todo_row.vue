@@ -16,10 +16,19 @@
           :values='estimates'
         />
       </div>
+      <div class='table-cell'>
+        <div v-for='label in allLabels'>
+          <input type="checkbox" :value="label.id" @change='updateCheckbox' :checked="labelAssociatedToTodo(label.id)">
+          <span>{{ label.name }}</span>
+        </div>
+      </div>
     </div>
-    <div :class='rowClass' @click='onClick' :tabIndex='tabIndex'
+    <div v-else
+      :class='rowClass'
+      @click='onClick'
+      :tabIndex='tabIndex'
       v-on:keyup.delete='deleteTodo'
-     v-else>
+     >
       <div class="table-cell table-id pointable">{{ todoId }}</div>
       <div class="table-cell table-title pointable">{{ title }}</div>
       <div class='table-cell table-status'>
@@ -35,6 +44,12 @@
           :id='id'
           :values='estimates'
         />
+      </div>
+      <div class='table-cell'>
+        <div v-for='label in allLabels'>
+          <input type="checkbox" :value="label.id" @change='updateCheckbox' :checked="labelAssociatedToTodo(label.id)">
+          <span>{{ label.name }}</span>
+        </div>
       </div>
     </div>
 </template>
@@ -71,11 +86,43 @@
           return -1;
         }
       },
+      todoLabels() {
+        return this.$store.getters.getLabelsForTodo(this.id);
+      },
       editable() {
         return this.active && this.canEdit;
       },
+      addableLabels() {
+        let labelsThatCanBeAdded = [];
+        let match = false;
+
+        for (let allLabel of this.allLabels) {
+          for (let labelId of this.todoLabelIds) {
+            if (allLabel.id == labelId) {
+              match = true;
+            }
+          }
+
+          if (!match && allLabel.name != 'All' ) {
+            labelsThatCanBeAdded.push(allLabel)
+          }
+        }
+
+        return labelsThatCanBeAdded;
+      }
     },
     methods: {
+      labelAssociatedToTodo(labelId) {
+        let labelsForTodo = this.$store.getters.getLabelsForTodo(this.id);
+
+        for (let label of labelsForTodo) {
+          if (label.id === labelId) {
+            return true;
+          }
+        }
+
+        return false;
+      },
       deleteTodo(e) {
         this.$store.commit(
           'deleteTodo',
@@ -194,6 +241,23 @@
             }
           }
         )
+      },
+      updateCheckbox(e) {
+        if (e.target.checked) {
+          this.$store.commit(
+            'addLabelToTodo', {
+              id: this.id,
+              labelId: e.target.value
+            }
+          )
+        } else {
+          this.$store.commit(
+            'removeLabelFromTodo', {
+              id: this.id,
+              labelId: e.target.value
+            }
+          )
+        }
       }
     },
     props: {
@@ -217,6 +281,14 @@
       },
       'estimates': {
         'default': [25, 25, 25, 25, 25, 25, 25,25, 25, 25, 25, 25, 25, 25,25, 25, 25, 25, 25, 25, 25,25, 25, 25, 25, 25, 25, 25]
+      },
+      'allLabels': {
+        'default': []
+      },
+      'todoLabelIds': {
+        'default': function() {
+          return [];
+        }
       },
       'todo': {}
     }
