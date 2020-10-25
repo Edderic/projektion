@@ -222,9 +222,15 @@ export function createStore() {
 
       ensureTodosAreAssociatedToAllLabel(state) {
         let allLabel = this.getters.getLabelByName('All');
-        let hasAllLabel = false;
+        let hasAllLabel;
 
         for (let todo of state.todos) {
+          hasAllLabel = false;
+
+          if (!todo.labelIds) {
+            todo.labelIds = [];
+          }
+
           for (let labelId of todo.labelIds) {
             if (labelId === allLabel.id) {
               hasAllLabel = true;
@@ -232,7 +238,7 @@ export function createStore() {
           }
 
           if (!hasAllLabel) {
-            todo.labelIds.push(allLabel.id)
+            todo.labelIds.push(allLabel.id);
           }
         }
       },
