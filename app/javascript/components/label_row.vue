@@ -48,6 +48,7 @@
     },
     methods: {
       deleteLabel(e) {
+        this.$store.commit('deleteLabel', { id: this.id });
       },
       setNameForLabel(e) {
         this.$store.commit('setLabel', {

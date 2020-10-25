@@ -416,8 +416,11 @@ export function createStore() {
           (label) => label.id == id
         );
 
-        // TODO: remove the label_id for each todo
         state.labels.splice(labelIndex, 1);
+
+        for (let todo of state.todos) {
+          this.getters.deleteLabelFromTodo({ id: todo.id, labelId: id});
+        }
       },
       deleteTodo(state) {
         const activeNode = this.getters.getActiveNode();
