@@ -419,7 +419,13 @@ export function createStore() {
         state.labels.splice(labelIndex, 1);
 
         for (let todo of state.todos) {
-          this.getters.deleteLabelFromTodo({ id: todo.id, labelId: id});
+          this.commit(
+            'deleteLabelFromTodo',
+            {
+              id: todo.id,
+              labelId: id
+            }
+          );
         }
       },
       deleteTodo(state) {
