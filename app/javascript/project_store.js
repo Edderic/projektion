@@ -413,6 +413,14 @@ export function createStore() {
         });
 
         this.commit('setSimulationStale', true);
+
+        let allLabel = this.getters.getLabelByName('All');
+
+        if (!node.labelIds) {
+          node.labelIds = [];
+        }
+
+        node.labelIds.push(allLabel.id);
       },
       addArrow(state, { parentNode, childNode }) {
         state.arrows.push(
