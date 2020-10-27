@@ -58,6 +58,33 @@ export function createStore() {
           });
         }).
           catch(() => { console.log('failure'); });
+      },
+      async clone({ commit, state }) {
+        let projectUuid = this.getters.uuidv4();
+
+        const token =
+          document.querySelector('[name=csrf-token]').content;
+
+        axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
+
+        state.projectUuid = projectUuid;
+        state.simName = state.simName + ' (cloned)';
+
+        axios.post(
+          `/${projectUuid}`,
+          {
+            project_uuid: projectUuid,
+            data: state
+          }
+        ).then(() => {
+          router.push({
+            name: 'savedProject',
+            params: {
+              project_uuid: projectUuid
+            }
+          });
+        }).
+          catch(() => { console.log('failure'); });
       }
     },
     getters: {

@@ -9,7 +9,11 @@
             projektion:
             <span class='definition'>projections for your projects</span>
           </th>
-          <th colspan=3></th>
+          <th colspan=1></th>
+          <th >
+            <button @click='cloneProject'>Clone</button>
+          </th>
+          <th></th>
           <th
             v-for='dateString in dateStrings'
           >
@@ -30,12 +34,12 @@
             </span>
           </th>
           <th>
-            <button @click='save'>Save</button>
-          </th>
-          <th>
             <div :class='simulationButtonClasses'>
               <button @click='simulate'>Simulate</button>
             </div>
+          </th>
+          <th>
+            <button @click='save'>Save</button>
           </th>
           <th></th>
           <th
@@ -197,6 +201,9 @@
           labels: []
         }
         this.$store.commit('addNewPerson', person);
+      },
+      cloneProject() {
+        this.$store.dispatch('clone');
       },
       setSimName(e) {
         this.$store.commit('editSimName', e.target.value);
