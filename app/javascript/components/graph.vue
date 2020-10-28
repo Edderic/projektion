@@ -26,6 +26,7 @@
       <Node
         v-for="todo in todos"
         :key="todo.id"
+        :todoLabelIds="todo.labelIds"
         :x="todo.x"
         :y="todo.y"
         :active="todo.active"

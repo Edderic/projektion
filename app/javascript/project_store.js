@@ -119,6 +119,9 @@ export function createStore() {
 
         for (let todo of state.todos) {
           for (let labelId of todo.labelIds) {
+            // TODO: assumes that labels are mutually exclusive -- no
+            // intersection of stories across labels. This might not be the
+            // case since we're using checkboxes
             if (labelId === id) {
               todos.push(todo);
             }
