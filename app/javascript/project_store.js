@@ -317,8 +317,6 @@ export function createStore() {
             count++;
 
             for (let finishableTodo of helpers.inProgressTodosSim(state.todos)) {
-              // TODO: when a todo is assigned to someone, only they should be
-              // able to start it
               helpers.finishTodoSim(finishableTodo, date, i);
             }
 
@@ -334,8 +332,6 @@ export function createStore() {
             }
 
             for (let finishableTodo of helpers.inProgressTodosSim(state.todos)) {
-              // TODO: when a todo is assigned to someone, only they should be
-              // able to start it
               helpers.finishTodoSim(finishableTodo, date, i);
             }
 
