@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>PlanSim</title>
+    <title>Projektion</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= Gon::Base.render_data %>
@@ -10,6 +10,10 @@
   </head>
 
   <body>
+    <% if current_user %>
+      <%= button_to 'Sign out', destroy_user_session_path, method: :delete, :data => { :no_turbolink => true} %>
+    <% end %>
+
     <p class="notice"><%= notice %></p>
     <p class="alert"><%= alert %></p>
 

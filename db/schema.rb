@@ -10,20 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_01_150248) do
+ActiveRecord::Schema.define(version: 2020_11_02_123347) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "project_users", force: :cascade do |t|
-    t.boolean "can_change"
-    t.boolean "can_read"
-    t.uuid "user_uuid"
-    t.uuid "project_uuid"
+  create_table "organizations", force: :cascade do |t|
+    t.string "name"
+    t.uuid "uuid"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["project_uuid"], name: "index_project_users_on_project_uuid"
-    t.index ["user_uuid"], name: "index_project_users_on_user_uuid"
+    t.index ["uuid"], name: "index_organizations_on_uuid"
   end
 
   create_table "projects", force: :cascade do |t|
@@ -31,6 +28,19 @@ ActiveRecord::Schema.define(version: 2020_11_01_150248) do
     t.json "data"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.uuid "owner_uuid"
+    t.uuid "organization_uuid"
+    t.index ["organization_uuid"], name: "index_projects_on_organization_uuid"
+    t.index ["owner_uuid"], name: "index_projects_on_owner_uuid"
+  end
+
+  create_table "user_organizations", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.uuid "user_uuid"
+    t.uuid "organization_uuid"
+    t.index ["organization_uuid"], name: "index_user_organizations_on_organization_uuid"
+    t.index ["user_uuid"], name: "index_user_organizations_on_user_uuid"
   end
 
   create_table "users", force: :cascade do |t|

@@ -1,7 +1,8 @@
 class ProjectController < ApplicationController
   before_action :authenticate_user!
 
-  def main
+  def index
+    gon.projects = projects
   end
 
   def show
@@ -22,6 +23,12 @@ class ProjectController < ApplicationController
 
   def project
     @project ||= Project.find_or_create_by(uuid: project_uuid)
+  end
+
+  def projects
+    ProjectService.
+      new.
+      find_projects_accessible_to_user(current_user)
   end
 
   def project_uuid

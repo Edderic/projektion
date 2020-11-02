@@ -3,10 +3,8 @@
 </template>
 
 <script>
-import App from './app';
 
 export default {
-  components: { App },
   created() {
     if (this.$route.name == 'savedProject') {
       this.$store.commit(
@@ -16,6 +14,13 @@ export default {
           projectUuid: window.gon.project_uuid
         }
       );
+    } else if (this.$route.name == 'projectsList') {
+      this.$store.commit(
+        'initializeProjects',
+        {
+          projects: window.gon.projects
+        }
+      )
     } else {
       this.$store.commit(
         'initialState',

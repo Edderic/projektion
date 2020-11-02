@@ -1,18 +1,19 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import App from './components/app';
+import ProjectsList from './components/projects_list';
 
 Vue.use(VueRouter);
 
 export const routes = [
   {
-    name: 'new',
-    path: '/',
-    component: App
+    name: 'projectsList',
+    path: '/projects',
+    component: ProjectsList
   },
   {
     name: 'savedProject',
-    path: '/:project_uuid',
+    path: '/projects/:project_uuid',
     component: App
   },
 ];

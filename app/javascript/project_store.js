@@ -18,6 +18,7 @@ export function createStore() {
       colorInterpolationScheme: [],
       labels: [],
       people: [],
+      projects: [],
       tabIndex: -1,
       arrows: [],
       lastClickedTodo: null,
@@ -43,7 +44,7 @@ export function createStore() {
         state.projectUuid = projectUuid;
 
         axios.post(
-          `/${projectUuid}`,
+          `/projects/${projectUuid}`,
           {
             project_uuid: projectUuid,
             data: state
@@ -71,7 +72,7 @@ export function createStore() {
         state.simName = state.simName + ' (cloned)';
 
         axios.post(
-          `/${projectUuid}`,
+          `/projects/${projectUuid}`,
           {
             project_uuid: projectUuid,
             data: state
@@ -192,6 +193,16 @@ export function createStore() {
       editSimName(state, simName) {
         state.simName = simName;
       },
+      initializeProjects(
+        state,
+        {
+          projects
+        }
+      ) {
+        state.projects = projects;
+      },
+      // TODO: rename this as initializeProjectState. This is meant for one
+      // project.
       initialState(
         state,
         {
